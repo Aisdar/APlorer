@@ -11,11 +11,11 @@ CONFIG += c++11
 SOURCES += \
     aplmainwindow.cpp \
     aplsingleapplication.cpp \
-    main.cpp
+    main.cpp \
 
 HEADERS += \
     aplmainwindow.h \
-    aplsingleapplication.h
+    aplsingleapplication.h \
 
 FORMS += \
     aplmainwindow.ui
@@ -33,3 +33,6 @@ OBJECTS_DIR     = temp/obj
 
 # 通用模块引入
 include(.\sys\qtsingleapplication\qtsingleapplication.pri)  # 应用单实例
+
+RESOURCES += \
+    icon.qrc
