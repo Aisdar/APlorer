@@ -30,3 +30,5 @@ void aplSingleApplication::messageDeal(const QString &message)
         }
     }
 }
+
+
