@@ -1,0 +1,12 @@
+INPUT(
+./temp\obj\aplmainwindow.o
+./temp\obj\aplsingleapplication.o
+./temp\obj\main.o
+./temp\obj\qtsingleapplication.o
+./temp\obj\qtlocalpeer.o
+./temp\obj\qrc_icon.o
+./temp\obj\moc_aplmainwindow.o
+./temp\obj\moc_aplsingleapplication.o
+./temp\obj\moc_qtsingleapplication.o
+./temp\obj\moc_qtlocalpeer.o
+);
