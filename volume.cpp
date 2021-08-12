@@ -108,6 +108,9 @@ bool Volume::ReadUSNJournal() {
             pfrn_name.ParentFileReferenceNumber = UsnRecord->ParentFileReferenceNumber;
             frnPfrnNameMap[UsnRecord->FileReferenceNumber] = pfrn_name;
 
+            fileNameVec.push_back(pfrn_name.FileName);
+            fileNameFrnMap.insert({pfrn_name.FileName, UsnRecord->FileReferenceNumber});
+
             DWORD record_len = UsnRecord->RecordLength;
 
             dwRetBytes -= record_len;
@@ -117,7 +120,7 @@ bool Volume::ReadUSNJournal() {
         }
         mft_data.StartFileReferenceNumber = *(USN*)&Buffer;
     }
-    qDebug() << frnPfrnNameMap.size() << endl;
+    qDebug() << frnPfrnNameMap.size() << " " << fileNameFrnMap.size() << endl;
     return true;
 }
 
@@ -143,6 +146,16 @@ bool Volume::DeleteUSN()
         CloseHandle(hVol);
         return false;
     }
+}
+
+bool Volume::GetFileFrnByName(const QString& fileName, std::vector<DWORDLONG> & vec)
+{
+    for (auto it = fileNameFrnMap.begin(); it != fileNameFrnMap.end(); it++) {
+        if (it->first == fileName) {
+            vec.push_back(it->second);
+        }
+    }
+    return true;
 }
 
 bool Volume::GetFilePathByFrn(DWORDLONG frn, QString& path)

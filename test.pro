@@ -17,10 +17,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    ntfsdata.cpp \
+    volume.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    ntfsdata.h \
+    volume.h
 
 FORMS += \
     mainwindow.ui

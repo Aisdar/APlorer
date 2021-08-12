@@ -19,10 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
     ntfsData.initData(wordList);
     qDebug() << "所有文件数量: " << wordList.size() << endl;
     QCompleter *completer = new QCompleter(wordList, this);
+    completer->setMaxVisibleItems(15);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setFilterMode(Qt::MatchContains);
-    completer->setMaxVisibleItems(15);
+    
 
     ui->lineEdit->setCompleter(completer);
 }

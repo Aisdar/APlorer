@@ -16,6 +16,7 @@
 #include <QMessageBox>
 #include <unordered_map>
 #include <QFile>
+#include <vector>
 
 struct PFRN_Name {
     DWORDLONG ParentFileReferenceNumber;
@@ -32,6 +33,13 @@ public:
                                 DeleteUSN();
                   QString test, test2 = "200000000f6bb"; bool ok;
                               GetFilePathByFrn(test2.toLongLong(&ok, 16), test); qDebug() << test << endl; }
+
+    bool InitVolumeInformation() {
+        return GetHandle() && CreateUSN() && GetUSNInfo() && ReadUSNJournal();
+    }
+    std::vector<QString> fileNameVec;
+    std::multimap<QString, DWORDLONG> fileNameFrnMap;
+
 private:
     bool GetHandle();          // 获取磁盘驱动器句柄
     bool CreateUSN();          // 初始化USN日志文件
@@ -40,7 +48,8 @@ private:
     bool ReadUSNJournal_test();// 读取USN日志的所有数据
     bool DeleteUSN();          // 删除USN日志文件
 
-    bool GetFilePathByFrn(DWORDLONG, QString&);  // 依据frn获取文件的完整路径
+    bool GetFileFrnByName(const QString&, std::vector<DWORDLONG>&); // 依据文件名获取(多个)frn
+    bool GetFilePathByFrn(DWORDLONG, QString&);     // 依据frn获取文件的完整路径
 
     char m_volume;             // 磁盘驱动器盘符
     HANDLE hVol;               // 磁盘驱动器句柄
@@ -48,6 +57,7 @@ private:
     USN_JOURNAL_DATA JournalData;
     PFRN_Name pfrn_name;
     FrnPfrnNameMap frnPfrnNameMap;
+
 };
 
 #endif // VOLUME_H
