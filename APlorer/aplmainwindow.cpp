@@ -128,6 +128,7 @@ void aplMainWindow::initToolBar()
     btn_layout->setMenu(layoutMenu);
     ui->toolBar->insertWidget(ui->actionsetting, btn_layout);
 
+    // 添加设置按钮
     QWidget *emptyWidget2 = new QWidget(this);
     emptyWidget2->setFixedSize(200, 35);
     ui->toolBar->insertWidget(ui->actionsetting, emptyWidget2);

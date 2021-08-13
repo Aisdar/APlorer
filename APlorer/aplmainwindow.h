@@ -35,6 +35,8 @@ private:
     void initBrowser(); // 初始化浏览窗口
     void setToolButtonActions(); // 设置按钮对应Action
     void setMenus(); // 设置菜单
+protected:
+
 
 
 };
