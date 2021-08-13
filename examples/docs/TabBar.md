@@ -4,9 +4,9 @@
 
 Qt原版的TabBar没有 '+' 扩展按钮，此处进行二次开发。
 
-<p align="center"><img src="https://cdn.jsdelivr.net/gh/fjnucym/PicGo-CDN/img/image-20210813221939698.png" /> </p>             <p align="center">效果图</p>
+<p align="center"><img src="https://gitee.com/aiyudehua/drawing-bed/raw/master/https://gitee.com/aiyudehua/drawing-bed/tree/master/img/20210813224429.png" /> </p>             <p align="center">效果图</p>
 
-<p align="center"><img src="https://cdn.jsdelivr.net/gh/fjnucym/PicGo-CDN/img/image-20210813222048060.png" /> </p>             <p align="center">Qt原版的标签条</p>
+<p align="center"><img src="https://gitee.com/aiyudehua/drawing-bed/raw/master/https://gitee.com/aiyudehua/drawing-bed/tree/master/img/20210813224453.png" /> </p>             <p align="center">Qt原版的标签条</p>
 
 ## 基本思路
 
