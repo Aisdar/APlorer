@@ -1,4 +1,7 @@
-[TOC]
+```cpp
+// 编辑人: 陈一鸣
+// 最后编辑时间: 2021/8/13
+```
 
  ## TabBar 带 '+' 扩展按钮的标签条
 
@@ -23,6 +26,30 @@ Qt原版的TabBar没有 '+' 扩展按钮，此处进行二次开发。
   ```
 
 ## 实现细节
+
+- 定义 '+' 按钮大小
+
+  ```cpp
+  // TabBar.h
+  #define PLUS_SIZE QSize(20, 20)
+  // 返回 '+'的大小
+  ```
+
+  ```cpp
+  // TabBar.cpp
+  TabBar::TabBar(QWidget *parent)
+      : QTabBar(parent)
+  {
+      plusButton = new QPushButton("+", this);
+      plusButton->setFixedSize(PLUS_SIZE);   // QSize(20, 20),但是按钮的大小比这个大！
+      connect(plusButton, &QPushButton::clicked, this, &TabBar::plusClicked); // '+' 信号
+  }
+  
+  QSize TabBar::plusSize() const
+  {
+      return plusButton->size();   // QSize(20, 20)
+  }
+  ```
 
 - 重写`virtual QSize sizeHint() const;`
 
@@ -55,10 +82,12 @@ Qt原版的TabBar没有 '+' 扩展按钮，此处进行二次开发。
   }
   ```
 
-- '+' 标签移动思路
+- '+' 标签移动思路: 遍历标签获得宽度，将 '+' 标签采用绝对布局放在最后一个标签右边。由于重写过sizeHint()，实际整个标签控件比父类要宽度 20 px.
 
+  `void movePlusButton()`
+  
   ```cpp
-  // 在 property("expending").toBool() 为真时 '+' 按钮失效！
+  // '+' 按钮 关键函数
   void TabBar::movePlusButton()
   {
       int x = 0;
@@ -68,17 +97,20 @@ Qt原版的TabBar没有 '+' 扩展按钮，此处进行二次开发。
       }
       int h = this->geometry().top();
       int w = this->width();
+  
       if(x > w)   // 选项卡出现滚动条时
       {
           plusButton->move(w - 52, h);
       }
       else        // 无滚动条时
       {
+          if(expanding())     // 解决与 expanding冲突
+              x = x - 20;
           plusButton->move(x, h);
       }
   }
   ```
-
+  
   
 
 ## 注意事项！（访问函数）
@@ -87,11 +119,12 @@ Qt原版的TabBar没有 '+' 扩展按钮，此处进行二次开发。
 
 ```cpp
 bool plusVisiable();				// '+' 按钮是否可见
-void setPlusVisiable(bool visiable);	// 设置 '+' 按钮可见性,[开启]
+void setPlusVisiable(bool visiable);		// 设置 '+' 按钮可见性
 QSize plusSize() const;				// ‘+’ 按钮的大小
+void setPlusOnTabRight(bool isRight);		// 设置 ‘+’ 按钮在标签右侧，默认是在标签上的！
 ```
 
-- '+' 按钮功能与expending功能冲突！一下函数使用时可能会影响'+'按钮的正常使用
+- '+' 按钮功能与expending功能冲突！以下函数使用时可能会影响'+'按钮的正常使用，具体影响在下边有提到（待优化）
 
 ```cpp
 bool expanding();
@@ -117,9 +150,18 @@ Widget::Widget(QWidget *parent)
     {
         bar->addTab("aab");
     });
-    // [重要]、[重要]、[重要]！手动显示
-    bar->setPlusVisiable(true);
+    // [重要]、[重要]、[重要]！手动修改它的位置在标签右侧！！
+    bar->setPlusOnTabRight(true);
     this->setWindowTitle("'+'按钮示例");
 }
 ```
 
+## 待优化
+
+```cpp
+//    bar->setPlusOnTabRight(true);	// 代码中如果不加这句
+```
+
+<p align="center"><img src="https://gitee.com/aiyudehua/drawing-bed/raw/master/https://gitee.com/aiyudehua/drawing-bed/tree/master/img/20210813231716.png" /> </p>             <p align="center">不开启'+'标签右侧显示</p>
+
+有点丑

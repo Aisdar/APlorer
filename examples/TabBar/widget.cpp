@@ -20,8 +20,8 @@ Widget::Widget(QWidget *parent)
     {
         bar->addTab("aab");
     });
-    bar->setPlusVisiable(false);
-    this->setWindowTitle("Qt原版的标签条");
+//    bar->setPlusOnTabRight(true);
+    this->setWindowTitle("不开启'+'标签右侧显示");
 }
 
 Widget::~Widget()

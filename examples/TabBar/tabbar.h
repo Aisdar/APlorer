@@ -16,6 +16,7 @@ public:
     QSize plusSize() const;
     bool plusVisiable();
     void setPlusVisiable(bool visiable);
+    void setPlusOnTabRight(bool isRight);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
