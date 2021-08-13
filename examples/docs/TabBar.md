@@ -55,6 +55,32 @@ Qt原版的TabBar没有 '+' 扩展按钮，此处进行二次开发。
   }
   ```
 
+- '+' 标签移动思路
+
+  ```cpp
+  // 在 property("expending").toBool() 为真时 '+' 按钮失效！
+  void TabBar::movePlusButton()
+  {
+      int x = 0;
+      for(int i = 0; i < this->count(); i++)
+      {
+          x += tabRect(i).width();
+      }
+      int h = this->geometry().top();
+      int w = this->width();
+      if(x > w)   // 选项卡出现滚动条时
+      {
+          plusButton->move(w - 52, h);
+      }
+      else        // 无滚动条时
+      {
+          plusButton->move(x, h);
+      }
+  }
+  ```
+
+  
+
 ## 注意事项！（访问函数）
 
 - '+' 标签按钮必须`手动开启`，且每次将它设置为QTabWidget的QTabBar时都必须重新开启一次。下边是这个功能的访问函数。
