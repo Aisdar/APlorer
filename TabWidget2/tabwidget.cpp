@@ -56,7 +56,12 @@ void TabWidget::setTabClosable(bool flag)
                                 break;
                             }
                         }
-                       // delete bar->tabButton(0, QTabBar::RightSide); // 用于删除最后一个页面的关闭按钮，但是总是错误
+                        QToolButton *button1 = qobject_cast<QToolButton*>(bar->tabButton(0, QTabBar::RightSide));
+                        qDebug() << button1->text();
+                        button1->removeAction(act_closeTab);
+                        disconnect(button1, nullptr, nullptr, nullptr);
+                        qDebug() << button1->depth();
+                        delete button1;// 用于删除最后一个页面的关闭按钮，但是总是错误
                     }  else {
                         // 原理同上
                         for (int j = 0; j < count(); ++j) {
