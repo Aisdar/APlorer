@@ -30,7 +30,7 @@ TabWidget::TabWidget(QWidget *parent) :
 
     // 连接信号和槽
     connect(act_createNewTab, SIGNAL(triggered()), this, SLOT(slt_createNewTab()));
-    // connect(act_closeTab, SIGNAL(triggered()), this, SLOT(slt_closeTab()));
+//    connect(act_closeTab, &QAction::triggered, tabBar(), &QTabBar::tabCloseRequested);
     // connect(act_closeTab, SIGNAL(triggered(int i)), this, SLOT(slt_removeTab(int)));
 }
 
@@ -44,6 +44,7 @@ void TabWidget::setTabClosable(bool flag)
                 QToolButton *btn_closeButton = new QToolButton(this); // 新建关闭按钮
                 btn_closeButton->setDefaultAction(act_closeTab); // 关联对应Action
                 bar->setTabButton(i, QTabBar::RightSide, btn_closeButton); // 向页面上设置按钮
+//                connect(btn_closeButton, &QToolButton::clicked, tabBar(), &QTabBar::tabCloseRequested);
                 connect(btn_closeButton, &QToolButton::clicked, [=](){
                     if (count() == 3) {
                         // 只剩3个页面，只能再多关闭一个
@@ -56,12 +57,9 @@ void TabWidget::setTabClosable(bool flag)
                                 break;
                             }
                         }
-                        QToolButton *button1 = qobject_cast<QToolButton*>(bar->tabButton(0, QTabBar::RightSide));
-                        qDebug() << button1->text();
-                        button1->removeAction(act_closeTab);
-                        disconnect(button1, nullptr, nullptr, nullptr);
-                        qDebug() << button1->depth();
-                        delete button1;// 用于删除最后一个页面的关闭按钮，但是总是错误
+
+                        // 用于删除最后一个页面的关闭按钮，但是总是错误
+
                     }  else {
                         // 原理同上
                         for (int j = 0; j < count(); ++j) {
@@ -97,6 +95,7 @@ void TabWidget::slt_createNewTab()
 void TabWidget::slt_closeTab()
 {
     // 预想能用上的函数，不确定
+
 }
 
 
