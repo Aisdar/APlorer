@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <QStandardItemModel>
 #include "data.h"
+#include <QDir>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,11 +26,19 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void openFile(QModelIndex index);
+
 private:
     Ui::MainWindow *ui;
     QStandardItem *item;
     QStandardItemModel *model;
     QList <FileInfo> lst_fileInfo;
-    void qFileInfoToFileInfo(QFileInfo *info, FileInfo &info2);
+    QDir dir;
+
+    QString fileType(QFileInfo info);
+    QString sizeFormat(QFileInfo info);
+
+    void setCurrentPage(QString path);
+
 };
 #endif // MAINWINDOW_H
