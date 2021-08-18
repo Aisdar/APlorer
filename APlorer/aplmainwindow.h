@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMenu>
+#include "tabbar.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class aplMainWindow; }
@@ -26,15 +27,19 @@ public:
 private slots:
     void on_actionforward_triggered();
 
+    void on_actionhome_triggered();
+
 private:
     Ui::aplMainWindow *ui;
 
     QFileSystemModel *m_model;
+    TabBar *bar;
 
     void initToolBar(); // 初始化工具栏
     void initBrowser(); // 初始化浏览窗口
     void setToolButtonActions(); // 设置按钮对应Action
     void setMenus(); // 设置菜单
+    void initHomeTab(QWidget *& homePage); // 初始化主页菜单
 protected:
 
 

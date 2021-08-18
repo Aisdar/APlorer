@@ -11,11 +11,19 @@ CONFIG += c++11
 SOURCES += \
     aplmainwindow.cpp \
     aplsingleapplication.cpp \
+    customstyle.cpp \
+    driverwidget.cpp \
     main.cpp \
+    mytabwidget.cpp \
+    tabbar.cpp
 
 HEADERS += \
     aplmainwindow.h \
     aplsingleapplication.h \
+    customstyle.h \
+    driverwidget.h \
+    mytabwidget.h \
+    tabbar.h
 
 FORMS += \
     aplmainwindow.ui

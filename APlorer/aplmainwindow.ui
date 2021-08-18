@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1265</width>
-    <height>733</height>
+    <width>1250</width>
+    <height>740</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,312 +23,6 @@
         <height>32</height>
        </size>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="0" rowspan="2" colspan="3">
-     <widget class="QFrame" name="frame">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QSplitter" name="splitter">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="childrenCollapsible">
-          <bool>false</bool>
-         </property>
-         <widget class="QTreeView" name="directoryTree">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>300</width>
-            <height>800</height>
-           </size>
-          </property>
-          <property name="acceptDrops">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QTabWidget" name="browser">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>600</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="currentIndex">
-           <number>1</number>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="elideMode">
-           <enum>Qt::ElideNone</enum>
-          </property>
-          <property name="tabsClosable">
-           <bool>true</bool>
-          </property>
-          <property name="movable">
-           <bool>true</bool>
-          </property>
-          <property name="tabBarAutoHide">
-           <bool>false</bool>
-          </property>
-          <widget class="QWidget" name="home">
-           <attribute name="icon">
-            <iconset>
-             <normaloff>:/icon/default theme/home-.png</normaloff>:/icon/default theme/home-.png</iconset>
-           </attribute>
-           <attribute name="title">
-            <string>Home</string>
-           </attribute>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QWidget" name="scaned" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>600</width>
-                <height>234</height>
-               </size>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_2">
-               <item row="1" column="0">
-                <widget class="QPushButton" name="btn_doc">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
-                 </property>
-                 <property name="text">
-                  <string>   文档</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normaloff>:/icon/default theme/file-pdf-fill.png</normaloff>:/icon/default theme/file-pdf-fill.png</iconset>
-                 </property>
-                 <property name="autoDefault">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QPushButton" name="btn_collect">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
-                 </property>
-                 <property name="text">
-                  <string>   收藏</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normaloff>:/icon/default theme/folder-info-fill.png</normaloff>:/icon/default theme/folder-info-fill.png</iconset>
-                 </property>
-                 <property name="autoDefault">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QPushButton" name="btn_video">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
-                 </property>
-                 <property name="text">
-                  <string> 视频</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normaloff>:/icon/default theme/video-gallery.png</normaloff>:/icon/default theme/video-gallery.png</iconset>
-                 </property>
-                 <property name="autoDefault">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QPushButton" name="btn_picture">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
-                 </property>
-                 <property name="text">
-                  <string>图片</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normaloff>:/icon/default theme/photo.png</normaloff>:/icon/default theme/photo.png</iconset>
-                 </property>
-                 <property name="autoDefault">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QPushButton" name="btn_zip">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
-                 </property>
-                 <property name="text">
-                  <string> 压缩文件</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normaloff>:/icon/default theme/folder-zip-fill.png</normaloff>:/icon/default theme/folder-zip-fill.png</iconset>
-                 </property>
-                 <property name="autoDefault">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QPushButton" name="btn_music">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
-                 </property>
-                 <property name="text">
-                  <string> 音乐</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normaloff>:/icon/default theme/folder-music-fill.png</normaloff>:/icon/default theme/folder-music-fill.png</iconset>
-                 </property>
-                 <property name="autoDefault">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_2">
-           <attribute name="title">
-            <string>index</string>
-           </attribute>
-          </widget>
-          <widget class="QWidget" name="tab">
-           <attribute name="icon">
-            <iconset>
-             <normaloff>:/icon/default theme/add.png</normaloff>:/icon/default theme/add.png</iconset>
-           </attribute>
-           <attribute name="title">
-            <string/>
-           </attribute>
-          </widget>
-         </widget>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </item>
     <item row="0" column="2">
@@ -416,6 +110,73 @@
       </layout>
      </widget>
     </item>
+    <item row="1" column="0" rowspan="2" colspan="3">
+     <widget class="QFrame" name="frame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="childrenCollapsible">
+          <bool>false</bool>
+         </property>
+         <widget class="QTreeView" name="directoryTree">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>800</height>
+           </size>
+          </property>
+          <property name="acceptDrops">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="MyTabWidget" name="brower">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>915</width>
+           <height>570</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -460,7 +221,7 @@
   </widget>
   <action name="actionnewFile">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/file-add-line.png</normaloff>:/icon/default theme/file-add-line.png</iconset>
    </property>
    <property name="text">
@@ -472,7 +233,7 @@
   </action>
   <action name="actionforward">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/forward-.png</normaloff>:/icon/default theme/forward-.png</iconset>
    </property>
    <property name="text">
@@ -484,7 +245,7 @@
   </action>
   <action name="actionbackward">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/back-arrow-.png</normaloff>:/icon/default theme/back-arrow-.png</iconset>
    </property>
    <property name="text">
@@ -496,7 +257,7 @@
   </action>
   <action name="actionhome">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/home-.png</normaloff>:/icon/default theme/home-.png</iconset>
    </property>
    <property name="text">
@@ -508,7 +269,7 @@
   </action>
   <action name="actioncopy">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/file-copy-2-fill.png</normaloff>:/icon/default theme/file-copy-2-fill.png</iconset>
    </property>
    <property name="text">
@@ -520,7 +281,7 @@
   </action>
   <action name="actionpaste">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/sticker-.png</normaloff>:/icon/default theme/sticker-.png</iconset>
    </property>
    <property name="text">
@@ -532,7 +293,7 @@
   </action>
   <action name="actioncut">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/cut.png</normaloff>:/icon/default theme/cut.png</iconset>
    </property>
    <property name="text">
@@ -544,7 +305,7 @@
   </action>
   <action name="actionshare">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/share-.png</normaloff>:/icon/default theme/share-.png</iconset>
    </property>
    <property name="text">
@@ -556,7 +317,7 @@
   </action>
   <action name="actiondelete">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/delete.png</normaloff>:/icon/default theme/delete.png</iconset>
    </property>
    <property name="text">
@@ -576,7 +337,7 @@
   </action>
   <action name="actionrefresh">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/rotate-right.png</normaloff>:/icon/default theme/rotate-right.png</iconset>
    </property>
    <property name="text">
@@ -588,7 +349,7 @@
   </action>
   <action name="actionlayout">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/grid.png</normaloff>:/icon/default theme/grid.png</iconset>
    </property>
    <property name="text">
@@ -600,7 +361,7 @@
   </action>
   <action name="actionsetting">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/settings-.png</normaloff>:/icon/default theme/settings-.png</iconset>
    </property>
    <property name="text">
@@ -612,7 +373,7 @@
   </action>
   <action name="actionbigIcon">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/grid-.png</normaloff>:/icon/default theme/grid-.png</iconset>
    </property>
    <property name="text">
@@ -624,7 +385,7 @@
   </action>
   <action name="actionsmallIcon">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/grid-_1.png</normaloff>:/icon/default theme/grid-_1.png</iconset>
    </property>
    <property name="text">
@@ -636,7 +397,7 @@
   </action>
   <action name="actiondetails">
    <property name="icon">
-    <iconset>
+    <iconset resource="icon.qrc">
      <normaloff>:/icon/default theme/layout-.png</normaloff>:/icon/default theme/layout-.png</iconset>
    </property>
    <property name="text">
@@ -647,6 +408,16 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <customwidgets>
+  <customwidget>
+   <class>MyTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>mytabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="icon.qrc"/>
+ </resources>
  <connections/>
 </ui>
