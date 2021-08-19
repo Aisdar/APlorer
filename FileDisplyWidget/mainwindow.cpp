@@ -11,7 +11,7 @@
 #include <QDir>
 #include "data.h"
 #include "mydelegate.h"
-#include "ddtaildelegate2.h"
+#include "dtaildelegate2.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -27,26 +27,23 @@ MainWindow::MainWindow(QWidget *parent)
     vHeaderView->setHidden(true);
     // 平行标头可移动
     QHeaderView* hHeaderView = ui->tableView->horizontalHeader();
+    hHeaderView->setMinimumSectionSize(50); // 最小的表头宽度
     hHeaderView->setSectionsMovable(true);
     // model设置完毕，关联TableView
     ui->tableView->setModel(model);
-    // 设置tableView的合适宽度
-    ui->tableView->setColumnWidth(0, 300);
-    ui->tableView->setColumnWidth(1, 300);
     // ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
-    ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu); // 菜单
-
+    // ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu); // 菜单
     // 名称显示部分使用代理
     MyDelegate *delegate = new MyDelegate(this);
     ui->tableView->setItemDelegateForColumn(0, delegate);
-
-    dDtailDelegate2 *delegate2 = new dDtailDelegate2;
+    // 其他部分也使用代理，做到无法选择的效果
+    DtailDelegate2 *delegate2 = new DtailDelegate2;
     for (int i = 1; i < 3; ++i)
         ui->tableView->setItemDelegateForColumn(i, delegate2);
 
     setCurrentPage("E:/"); // 设置主页为E盘测试
 
-    connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::openFile); // 连接双击信号和进入目录
+     connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::openFile); // 连接双击信号和进入目录
 
 }
 
@@ -81,6 +78,7 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     if (dir.cdUp())
+        // 返回上一级
         setCurrentPage(dir.path());
 }
 
@@ -137,6 +135,11 @@ void MainWindow::setCurrentPage(QString path)
         model->setItem(row, 2, new QStandardItem(fileType(x))); // 第三列文件类型
         model->setItem(row, 3, new QStandardItem(sizeFormat(x))); // 第四列大小
     }
+    // 设置tableView的合适宽度,这个大小依赖于代理中的SizeHint
+
+    ui->tableView->resizeColumnsToContents();
+    ui->tableView->resizeRowsToContents();
+
 }
 
 void MainWindow::openFile(QModelIndex index)
@@ -147,6 +150,7 @@ void MainWindow::openFile(QModelIndex index)
             index = model->index(index.row(), 0);
         setCurrentPage(index.data(Qt::UserRole+1).value<QString>());
     }
+
 }
 
 

@@ -1,0 +1,19 @@
+#ifndef MYTABLEVIEW_H
+#define MYTABLEVIEW_H
+
+#include <QTableView>
+#include <QObject>
+#include <QWidget>
+#include <QMouseEvent>
+
+class MyTableView : public QTableView
+{
+    Q_OBJECT
+public:
+    MyTableView(QWidget *parent = nullptr);
+
+    void mousePressEvent(QMouseEvent *event) override;
+//    void mouseMoveEvent(QMouseEvent *event) override; // 处理鼠标事件
+};
+
+#endif // MYTABLEVIEW_H

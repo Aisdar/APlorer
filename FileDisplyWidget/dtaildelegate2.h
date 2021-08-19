@@ -1,16 +1,18 @@
-#ifndef DDTAILDELEGATE2_H
-#define DDTAILDELEGATE2_H
+#ifndef DTAILDELEGATE2_H
+#define DTAILDELEGATE2_H
 
 #include <QStyledItemDelegate>
 #include <QObject>
 #include <QWidget>
 
-class dDtailDelegate2 : public QStyledItemDelegate
+class DtailDelegate2 : public QStyledItemDelegate
 {
 public:
-    explicit dDtailDelegate2(QObject *parent = nullptr);
+    explicit DtailDelegate2(QObject *parent = nullptr);
     QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const Q_DECL_OVERRIDE;
 };
 
-#endif // DDTAILDELEGATE2_H
+#endif // DTAILDELEGATE2_H

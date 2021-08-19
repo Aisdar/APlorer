@@ -25,7 +25,7 @@
     <item>
      <widget class="QPushButton" name="pushButton_2">
       <property name="text">
-       <string>PushButton2</string>
+       <string>BackWard</string>
       </property>
      </widget>
     </item>

@@ -1,20 +1,31 @@
-#include "ddtaildelegate2.h"
+#include "dtaildelegate2.h"
 #include <QPainter>
 #include <QDebug>
 #include <QStandardItem>
 
-dDtailDelegate2::dDtailDelegate2(QObject *parent) : QStyledItemDelegate(parent)
+DtailDelegate2::DtailDelegate2(QObject *parent) : QStyledItemDelegate(parent)
 {
 
 }
 
-QWidget *dDtailDelegate2::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+QWidget *DtailDelegate2::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return NULL;
+    return nullptr;
 }
 
-void dDtailDelegate2::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void DtailDelegate2::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    // qDebug() << index.data().toString();
-    painter->drawText(option.rect, index.data().toString(), Qt::AlignVCenter|Qt::AlignLeft);
+    QRect rect = option.rect;
+    QString text = index.data().toString();
+    QFontMetrics metrics(painter->font());
+    if(metrics.width(text) > rect.width())
+    {
+        text = metrics.elidedText(text, Qt::ElideRight, rect.width());
+    }
+    painter->drawText(option.rect, text, Qt::AlignVCenter|Qt::AlignLeft);
+}
+
+QSize DtailDelegate2::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    return QSize(150, option.rect.height());
 }
