@@ -49,6 +49,7 @@ void MainWindow::on_pushButton_clicked()
             count++;
         }
     }
-    ui->scrollArea->widget()->setLayout(&driveLayout);
+    ui->scrollAreaWidgetContents->setLayout(&driveLayout);
+    // ui->scrollArea->widget()->setLayout(&driveLayout);
 }
 
