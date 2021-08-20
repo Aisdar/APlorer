@@ -7,6 +7,8 @@
 #include "data.h"
 #include <QIcon>
 #include <QPixmap>
+#include <QStandardItemModel>
+#include <QDir>
 
 
 MyDelegate::MyDelegate(QWidget *parent) : QStyledItemDelegate(parent)
@@ -20,7 +22,9 @@ QWidget *MyDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &o
     QString fileName = index.data(Qt::UserRole+1).value<QString>();
     QFileInfo info(fileName);
     editor->setText(info.fileName());
-    editor->setEnabled(true);
+    connect(editor, &QLineEdit::editingFinished, [=](){
+        editor->hide();
+    });
     return editor;
 }
 
@@ -28,7 +32,6 @@ QSize MyDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex
 {
     QSize size = option.rect.size();
     size.setWidth(size.width()+300);
-    // qDebug() << size;
     return size;
 }
 
@@ -66,3 +69,21 @@ void MyDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, co
     }
     painter->drawText(rect.adjusted(+30, 0, 0, 0), Qt::AlignVCenter|Qt::AlignLeft, text);
 }
+
+void MyDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+    QStandardItemModel *smodel = static_cast<QStandardItemModel *>(model);
+    QLineEdit *editor1 = static_cast<QLineEdit *>(editor);
+    QString fileName = index.data(Qt::UserRole+1).value<QString>(); // 获取在索引中的文件绝对路径
+    QFile file(fileName);
+    QFileInfo x(file);
+    // qDebug() << editor1->text();
+    if (file.rename(x.absoluteDir().path() + "/" + editor1->text())) {
+        x.setFile(file);
+        QStandardItem *item = new QStandardItem;
+        item->setData(x.absoluteFilePath(), Qt::UserRole+1); // 文件名
+        item->setData(x.isDir(), Qt::UserRole+2); // 是否为文件夹
+        smodel->setItem(index.row(), 0, item);
+    }
+}
+

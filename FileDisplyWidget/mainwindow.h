@@ -29,6 +29,8 @@ private slots:
 
     void openFile(QModelIndex index);
 
+    // void closeEditor(QModelIndex index);
+
 private:
     Ui::MainWindow *ui;
     QStandardItem *item;

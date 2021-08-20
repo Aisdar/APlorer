@@ -14,6 +14,13 @@ public:
 
     void mousePressEvent(QMouseEvent *event) override;
 //    void mouseMoveEvent(QMouseEvent *event) override; // 处理鼠标事件
+signals:
+    void openFile(QModelIndex);
+    void changeFileName(QModelIndex);
+
+private:
+    QModelIndex *openedEdior = nullptr;
+
 };
 
 #endif // MYTABLEVIEW_H

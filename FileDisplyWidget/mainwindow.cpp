@@ -43,8 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCurrentPage("E:/"); // 设置主页为E盘测试
 
-     connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::openFile); // 连接双击信号和进入目录
-
+     // connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::openFile); // 连接双击信号和进入目录(废弃）
+    connect(ui->tableView, &MyTableView::openFile, this, &MainWindow::openFile);
 }
 
 MainWindow::~MainWindow()
@@ -139,7 +139,7 @@ void MainWindow::setCurrentPage(QString path)
 
     ui->tableView->resizeColumnsToContents();
     ui->tableView->resizeRowsToContents();
-
+    ui->tableView->selectionModel();
 }
 
 void MainWindow::openFile(QModelIndex index)
