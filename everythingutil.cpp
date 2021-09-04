@@ -1,4 +1,7 @@
-﻿#pragma execution_character_set("utf-8")
+﻿/**
+  * 通过进程间通信调用Everything实现文件管理器的查询功能
+  */
+#pragma execution_character_set("utf-8")
 
 #include "everythingutil.h"
 #include <QDebug>
