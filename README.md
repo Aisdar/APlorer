@@ -5,8 +5,8 @@
 
 搜索功能依赖于Everything SDK
 
-需要根据软件的位数选择Everything32.dll或Everything64.dll放到debug/release目录下
+debug或者release目录下需要有Everything.exe以及Everything32/64.dll
 
-软件的编译请选择MinGW64或32
+软件的编译请选择MinGW32/64
 
 ![image-20210905165339720](https://raw.githubusercontent.com/lyhellcat/Pic/master/img/image-20210905165339720.png)
