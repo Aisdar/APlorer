@@ -3,9 +3,14 @@
 #include "driverwidget.h"
 #include "customstyle.h"
 #include "tabbar.h"
+#include "SearchWindow.h"
+#include "everythingutil.h"
+
 #include <QFileSystemModel>
 #include <QDebug>
 #include <QPushButton>
+#include <QApplication>
+#include <QTranslator>
 
 aplMainWindow::aplMainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -222,6 +227,7 @@ void aplMainWindow::on_actionhome_triggered()
 
 void aplMainWindow::on_actionSearch_triggered()
 {
-
+    EveryThingUtil::openEverything();
+    searchWindow = new SearchWindow();
+    searchWindow->show();
 }
-

@@ -9,23 +9,28 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    SearchWindow.cpp \
     aplmainwindow.cpp \
     aplsingleapplication.cpp \
     customstyle.cpp \
     driverwidget.cpp \
+    everythingutil.cpp \
     main.cpp \
     mytabwidget.cpp \
     tabbar.cpp
 
 HEADERS += \
+    SearchWindow.h \
     aplmainwindow.h \
     aplsingleapplication.h \
     customstyle.h \
     driverwidget.h \
+    everythingutil.h \
     mytabwidget.h \
     tabbar.h
 
 FORMS += \
+    SearchWindow.ui \
     aplmainwindow.ui
 
 # Default rules for deployment.
@@ -44,3 +49,10 @@ include(.\sys\qtsingleapplication\qtsingleapplication.pri)  # 应用单实例
 
 RESOURCES += \
     icon.qrc
+
+
+INCLUDEPATH += $$PWD/include
+
+LIBS += -L$$PWD/lib -lEverything64
+
+DISTFILES +=

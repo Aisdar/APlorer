@@ -1,7 +1,7 @@
 ﻿#pragma execution_character_set("utf-8")
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "SearchWindow.h"
+#include "ui_SearchWindow.h"
 #include "everythingutil.h"
 
 #include <QFileIconProvider>
@@ -12,13 +12,13 @@
 #include <QDebug>
 #include <QDateTime>
 
-MainWindow::MainWindow(QWidget *parent)
+SearchWindow::SearchWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     this->setWindowTitle("Aplorer搜索");
-    this->setWindowIcon(QIcon(":/new/images/Search.svg"));
+    this->setWindowIcon(QIcon(":/Search.svg"));
 
     this->model = new QStandardItemModel;
     this->proxyModel = new QSortFilterProxyModel(this);
@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     on_lineEdit_textChanged("");
 }
 
-MainWindow::~MainWindow()
+SearchWindow::~SearchWindow()
 {
     delete ui;
 }
@@ -64,7 +64,7 @@ QString getFileSize(const QFileInfo& fileInfo) {
     return res;
 }
 
-void MainWindow::on_lineEdit_textChanged(const QString &keywords)
+void SearchWindow::on_lineEdit_textChanged(const QString &keywords)
 {
     search_arg = keywords;
     model->clear();
@@ -102,7 +102,7 @@ void MainWindow::on_lineEdit_textChanged(const QString &keywords)
     this->ui->tableView->setColumnWidth(4, 150);
 }
 
-void MainWindow::slot_context_menu(QPoint pos)
+void SearchWindow::slot_context_menu(QPoint pos)
 {
     idx = ui->tableView->indexAt(pos);
     if (idx.isValid()) {
@@ -110,13 +110,13 @@ void MainWindow::slot_context_menu(QPoint pos)
     }
 }
 
-void MainWindow::slot_open_file()
+void SearchWindow::slot_open_file()
 {
     QString filePath =  model->item(idx.row(), 2)->text();
     QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
 }
 
-void MainWindow::slot_delete_file()
+void SearchWindow::slot_delete_file()
 {
     QString filePath =  model->item(idx.row(), 2)->text();
     QFile deleteFile(filePath);
@@ -134,14 +134,14 @@ void MainWindow::slot_delete_file()
     }
 }
 
-void MainWindow::slot_copy_file_path()
+void SearchWindow::slot_copy_file_path()
 {
     QString filePath =  model->item(idx.row(), 2)->text();
     QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->setText(filePath);
 }
 
-void MainWindow::initPopMenu()
+void SearchWindow::initPopMenu()
 {
     popMenu = new QMenu(ui->tableView);
 

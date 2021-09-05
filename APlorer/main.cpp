@@ -1,7 +1,8 @@
-#include "aplmainwindow.h"
+﻿#include "aplmainwindow.h"
 #include "aplsingleapplication.h"
 
 #include <QDebug>
+#include <QTranslator>
 
 aplMainWindow *apl; // 第一打开的窗口的指针
 QList<aplMainWindow *> aplList; // 保存窗口的链表
@@ -18,7 +19,7 @@ int main(int argc, char *argv[])
         return EXIT_SUCCESS;
     }
     else
-    {   // 从未被实例，船舰一个新窗口并调用init做初始化
+    {   // 从未被实例，创建一个新窗口并调用init做初始化
         pw = new aplMainWindow();
         pw->init();
         a.setActivationWindow(pw, false);
@@ -28,6 +29,10 @@ int main(int argc, char *argv[])
 
         pw->show();
     }
+
+    QTranslator translator;
+    translator.load(":/qt_zh_CN.qm");
+    a.installTranslator(&translator);
 
     return a.exec();
 }
