@@ -3,10 +3,8 @@
 
 第一次修改
 
-first wjt
+搜索功能依赖于Everything SDK
 
-hjhhhh
+需要根据软件的位数选择Everything32.dll或Everything64.dll放到debug/release目录下
 
-hjhhhhh2
-
-加add后
+软件的编译请选择MingW
