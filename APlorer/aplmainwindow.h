@@ -1,4 +1,4 @@
-#ifndef APLMAINWINDOW_H
+﻿#ifndef APLMAINWINDOW_H
 #define APLMAINWINDOW_H
 
 #include <QMainWindow>
@@ -28,6 +28,8 @@ private slots:
     void on_actionforward_triggered();
 
     void on_actionhome_triggered();
+
+    void on_actionSearch_triggered();
 
 private:
     Ui::aplMainWindow *ui;

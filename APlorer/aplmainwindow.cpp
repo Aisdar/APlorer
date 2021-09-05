@@ -219,3 +219,9 @@ void aplMainWindow::on_actionhome_triggered()
     ui->brower->setCurrentIndex(index);
 }
 
+
+void aplMainWindow::on_actionSearch_triggered()
+{
+
+}
+

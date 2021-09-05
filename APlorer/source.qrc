@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/new">
+        <file>qt_zh_CN.qm</file>
+        <file>images/Search.svg</file>
+    </qresource>
+</RCC>
