@@ -7,4 +7,4 @@
 
 需要根据软件的位数选择Everything32.dll或Everything64.dll放到debug/release目录下
 
-软件的编译请选择MingW
+软件的编译请选择MinGW64或32
