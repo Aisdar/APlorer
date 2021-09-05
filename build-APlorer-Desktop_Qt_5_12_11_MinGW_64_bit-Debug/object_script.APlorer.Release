@@ -1,13 +1,16 @@
+temp/obj/SearchWindow.o
 temp/obj/aplmainwindow.o
 temp/obj/aplsingleapplication.o
 temp/obj/customstyle.o
 temp/obj/driverwidget.o
+temp/obj/everythingutil.o
 temp/obj/main.o
 temp/obj/mytabwidget.o
 temp/obj/tabbar.o
 temp/obj/qtsingleapplication.o
 temp/obj/qtlocalpeer.o
 temp/obj/qrc_icon.o
+temp/obj/moc_SearchWindow.o
 temp/obj/moc_aplmainwindow.o
 temp/obj/moc_aplsingleapplication.o
 temp/obj/moc_customstyle.o
