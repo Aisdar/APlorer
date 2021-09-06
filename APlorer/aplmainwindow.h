@@ -36,7 +36,7 @@ private:
     TabBar *bar;
 
     void initToolBar(); // 初始化工具栏
-    void initBrowser(); // 初始化浏览窗口
+    void initFileBrowser(QWidget *& pathPage); // 初始化浏览窗口
     void setToolButtonActions(); // 设置按钮对应Action
     void setMenus(); // 设置菜单
     void initHomeTab(QWidget *& homePage); // 初始化主页菜单

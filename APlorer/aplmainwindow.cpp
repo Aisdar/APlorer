@@ -6,6 +6,7 @@
 #include <QFileSystemModel>
 #include <QDebug>
 #include <QPushButton>
+#include <QTableView>
 
 aplMainWindow::aplMainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,7 +17,6 @@ aplMainWindow::aplMainWindow(QWidget *parent)
     setToolButtonActions(); // 设置按钮对应的Action
     setMenus(); // 设置按钮对应的一些菜单
     initToolBar(); // 初始化工具栏
-    initBrowser(); // 初始化浏览窗口
     QWidget *homePage = new QWidget(ui->brower);
     initHomeTab(homePage); // 初始化浏览窗口的HomePage
     ui->brower->addTab(homePage, QIcon(":/icon/default theme/home-.png"), "Home");
@@ -91,6 +91,7 @@ void aplMainWindow::setMenus()
 
 void aplMainWindow::initHomeTab(QWidget *&homePageWidget)
 {
+    // 初始化主页
     delete homePageWidget;
     homePageWidget = new QWidget(ui->brower);
     // 为页面新建布局
@@ -147,15 +148,14 @@ void aplMainWindow::initHomeTab(QWidget *&homePageWidget)
 }
 
 
-
-
 void aplMainWindow::on_actionforward_triggered()
 {
-
+    // 前进按钮
 }
 
 void aplMainWindow::initToolBar()
 {
+    // 初始化工具栏
     // 一个空白
     QWidget *emptyWidget1 = new QWidget(this);
     emptyWidget1->setFixedSize(60, 35);
@@ -198,18 +198,17 @@ void aplMainWindow::initToolBar()
     ui->toolBar->insertWidget(ui->actionsetting, emptyWidget2);
 }
 
-void aplMainWindow::initBrowser()
+void aplMainWindow::initFileBrowser(QWidget *&pathPage)
 {
-//    TabBar *bar = new TabBar(this);
-//    bar->setTabsClosable(true);
-//    bar->addTab(QIcon(":/home.png"), "Home");
-//    bar->setPlusOnTabRight(true);
-//    bar->setStyle(new CustomStyle);
+    delete pathPage;
+
 }
+
 
 
 void aplMainWindow::on_actionhome_triggered()
 {
+    // 回到主页
     int index = ui->brower->currentIndex();
     qDebug() << index;
     ui->brower->removeTab(index);
