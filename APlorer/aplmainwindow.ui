@@ -218,6 +218,7 @@
    <addaction name="actiondelete"/>
    <addaction name="separator"/>
    <addaction name="actionsetting"/>
+   <addaction name="actionSearch"/>
   </widget>
   <action name="actionnewFile">
    <property name="icon">
@@ -405,6 +406,15 @@
    </property>
    <property name="toolTip">
     <string>详细内容</string>
+   </property>
+  </action>
+  <action name="actionSearch">
+   <property name="icon">
+    <iconset resource="icon.qrc">
+     <normaloff>:/Search.svg</normaloff>:/Search.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Search</string>
    </property>
   </action>
  </widget>

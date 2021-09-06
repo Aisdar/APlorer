@@ -1,19 +1,24 @@
-#include "aplmainwindow.h"
+﻿#include "aplmainwindow.h"
 #include "ui_aplmainwindow.h"
 #include "driverwidget.h"
 #include "customstyle.h"
 #include "tabbar.h"
+#include "SearchWindow.h"
+#include "everythingutil.h"
+
 #include <QFileSystemModel>
 #include <QDebug>
 #include <QPushButton>
 #include <QTableView>
+#include <QApplication>
+#include <QTranslator>
 
 aplMainWindow::aplMainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::aplMainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle("APlore"); // 设置标题
+    setWindowTitle("APlorer"); // 设置标题
     setToolButtonActions(); // 设置按钮对应的Action
     setMenus(); // 设置按钮对应的一些菜单
     initToolBar(); // 初始化工具栏
@@ -218,3 +223,10 @@ void aplMainWindow::on_actionhome_triggered()
     ui->brower->setCurrentIndex(index);
 }
 
+
+void aplMainWindow::on_actionSearch_triggered()
+{
+    EveryThingUtil::openEverything();
+    searchWindow = new SearchWindow();
+    searchWindow->show();
+}

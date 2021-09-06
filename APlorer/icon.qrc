@@ -385,5 +385,7 @@
         <file>icon/default theme/zoom-in.png</file>
         <file>icon/default theme/zoom-out.png</file>
         <file>icon/default theme/rank.png</file>
+        <file>Search.svg</file>
+        <file>qt_zh_CN.qm</file>
     </qresource>
 </RCC>

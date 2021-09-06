@@ -3,10 +3,10 @@
 
 第一次修改
 
-first wjt
+搜索功能依赖于Everything SDK
 
-hjhhhh
+debug或者release目录下需要有Everything.exe以及Everything32/64.dll
 
-hjhhhhh2
+软件的编译请选择MinGW32/64
 
-加add后
+![image-20210905165339720](https://raw.githubusercontent.com/lyhellcat/Pic/master/img/image-20210905165339720.png)
