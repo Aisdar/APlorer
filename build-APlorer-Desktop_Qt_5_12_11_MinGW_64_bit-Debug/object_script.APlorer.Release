@@ -1,6 +1,7 @@
 temp/obj/SearchWindow.o
 temp/obj/aplmainwindow.o
 temp/obj/aplsingleapplication.o
+temp/obj/countthefilesizeofeachcategory.o
 temp/obj/customstyle.o
 temp/obj/driverwidget.o
 temp/obj/everythingutil.o

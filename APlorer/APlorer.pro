@@ -12,6 +12,7 @@ SOURCES += \
     SearchWindow.cpp \
     aplmainwindow.cpp \
     aplsingleapplication.cpp \
+    countthefilesizeofeachcategory.cpp \
     customstyle.cpp \
     driverwidget.cpp \
     everythingutil.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     SearchWindow.h \
     aplmainwindow.h \
     aplsingleapplication.h \
+    countthefilesizeofeachcategory.h \
     customstyle.h \
     driverwidget.h \
     everythingutil.h \

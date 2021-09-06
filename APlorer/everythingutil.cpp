@@ -78,3 +78,34 @@ QString EveryThingUtil::getSearchErrorString(){
     }
     return str;
 }
+
+qint64 EveryThingUtil::getCategoryFileSize(const QString& str, bool reg)
+{
+    QMutex mutex;
+    qint64 fileSize{ 0 };
+    mutex.lock();
+    // 搜索字符串
+    std::wstring wstr = str.toStdWString();
+    LPCWSTR lpcwstr = wstr.c_str();
+    if (reg) {
+        Everything_SetRegex(true);
+    }
+    Everything_SetSearch(lpcwstr);
+    Everything_SetRequestFlags(EVERYTHING_REQUEST_FILE_NAME | EVERYTHING_REQUEST_PATH);
+    // 执行查询
+    BOOL result = Everything_Query(TRUE);
+    if (!result) {
+        qDebug() << getSearchErrorString();
+    } else {
+        DWORD fileCount = Everything_GetNumResults();
+        for (DWORD i = 0; i < fileCount; i++) {
+            QString name = QString::fromStdWString(Everything_GetResultFileName(i));
+            QString path = QDir::toNativeSeparators(QString::fromStdWString(Everything_GetResultPath(i)));
+            QFileInfo fileInfo(path + QDir::separator() + name);
+            fileSize += fileInfo.size();
+        }
+    }
+    Everything_Reset();
+    mutex.unlock();
+    return fileSize;
+}
