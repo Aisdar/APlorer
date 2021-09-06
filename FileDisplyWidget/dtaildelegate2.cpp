@@ -10,11 +10,12 @@ DtailDelegate2::DtailDelegate2(QObject *parent) : QStyledItemDelegate(parent)
 
 QWidget *DtailDelegate2::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return nullptr;
+    return nullptr; // 返回空指针，这个项目不可编辑
 }
 
 void DtailDelegate2::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    // 绘制略缩文字
     QRect rect = option.rect;
     QString text = index.data().toString();
     QFontMetrics metrics(painter->font());
@@ -27,5 +28,5 @@ void DtailDelegate2::paint(QPainter *painter, const QStyleOptionViewItem &option
 
 QSize DtailDelegate2::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return QSize(150, option.rect.height());
+    return QSize(150, option.rect.height()); // 固定宽度
 }

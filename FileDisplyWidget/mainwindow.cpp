@@ -22,13 +22,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     // 文件信息显示的model
     model = new QStandardItemModel(this);
-    // 隐藏垂直标头
-    QHeaderView* vHeaderView =  ui->tableView->verticalHeader();
-    vHeaderView->setHidden(true);
-    // 平行标头可移动
-    QHeaderView* hHeaderView = ui->tableView->horizontalHeader();
-    hHeaderView->setMinimumSectionSize(50); // 最小的表头宽度
-    hHeaderView->setSectionsMovable(true);
+//    // 隐藏垂直标头
+//    QHeaderView* vHeaderView =  ui->tableView->verticalHeader();
+//    vHeaderView->setHidden(true);
+//    // 平行标头可移动
+//    QHeaderView* hHeaderView = ui->tableView->horizontalHeader();
+//    hHeaderView->setMinimumSectionSize(50); // 最小的表头宽度
+//    hHeaderView->setSectionsMovable(true);
     // model设置完毕，关联TableView
     ui->tableView->setModel(model);
     // ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableView->setItemDelegateForColumn(0, delegate);
     // 其他部分也使用代理，做到无法选择的效果
     DtailDelegate2 *delegate2 = new DtailDelegate2;
-    for (int i = 1; i < 3; ++i)
+    for (int i = 1; i < 4; ++i)
         ui->tableView->setItemDelegateForColumn(i, delegate2);
 
     setCurrentPage("E:/"); // 设置主页为E盘测试
@@ -123,9 +123,10 @@ void MainWindow::setCurrentPage(QString path)
     model->setHeaderData(2, Qt::Horizontal, "类型");
     model->setHeaderData(3, Qt::Horizontal, "大小");
     dir.setPath(path);
-    // qDebug() << dir.currentPath();
+    // qDebug() << "currentPath:" << dir.currentPath() << " Path:" << dir.path();
     for (auto x: dir.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries)) {
         // 过滤选择不要上一级和本级目录
+        // qDebug() << x;
         QStandardItem* item = new QStandardItem; // 第一列需要较为复杂的item
         int row = model->rowCount(); // 每次都是新增列，所以行数为rowCount
         item->setData(x.absoluteFilePath(), Qt::UserRole+1); // 文件名
