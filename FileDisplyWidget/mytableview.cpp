@@ -2,10 +2,17 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QLineEdit>
+#include <QHeaderView>
 
 MyTableView::MyTableView(QWidget *parent) : QTableView(parent)
 {
-
+    // 隐藏垂直标头
+    QHeaderView* vHeaderView =  this->verticalHeader();
+    vHeaderView->setHidden(true);
+    // 平行标头可移动
+    QHeaderView* hHeaderView = this->horizontalHeader();
+    hHeaderView->setMinimumSectionSize(50); // 最小的表头宽度
+    hHeaderView->setSectionsMovable(true);
 }
 
 void MyTableView::mousePressEvent(QMouseEvent *event)
@@ -42,6 +49,9 @@ void MyTableView::mousePressEvent(QMouseEvent *event)
             }
             lastTime = QTime::currentTime();
         }
+    } else if (event->button() == Qt::RightButton) {
+        isLeft = false;
+
     } else {
         isLeft = false;
     }
