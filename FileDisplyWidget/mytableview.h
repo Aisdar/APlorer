@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QMouseEvent>
+#include <QMenu>
 
 class MyTableView : public QTableView
 {

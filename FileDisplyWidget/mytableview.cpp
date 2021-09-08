@@ -3,6 +3,7 @@
 #include <QDateTime>
 #include <QLineEdit>
 #include <QHeaderView>
+#include <QSettings>
 
 MyTableView::MyTableView(QWidget *parent) : QTableView(parent)
 {
@@ -51,7 +52,20 @@ void MyTableView::mousePressEvent(QMouseEvent *event)
         }
     } else if (event->button() == Qt::RightButton) {
         isLeft = false;
-
+        QSettings reg("HKEY_CLASSES_ROOT\\*", QSettings::NativeFormat);
+        qDebug() << reg.childGroups();
+        foreach (auto x, reg.childKeys()){
+            qDebug() << reg.value(x);
+        }
+        qDebug() << reg.childKeys();
+        qDebug() << reg.allKeys();
+        qDebug() << reg.status();
+        reg.beginGroup("HKEY_CLASSES_ROOT");
+        qDebug() << reg.childKeys();
+        QMenu *menu = new QMenu(this);
+        menu->addAction(QString("111"));
+        QPoint pos = event->globalPos();
+        menu->exec(pos);
     } else {
         isLeft = false;
     }

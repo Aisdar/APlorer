@@ -12,6 +12,8 @@
 #include "data.h"
 #include "mydelegate.h"
 #include "dtaildelegate2.h"
+#include <QProcess>
+#include <QDesktopServices>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -45,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent)
 
      // connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::openFile); // 连接双击信号和进入目录(废弃）
     connect(ui->tableView, &MyTableView::openFile, this, &MainWindow::openFile);
+    connect(ui->tableView, &QTableView::customContextMenuRequested, [=](){
+        qDebug() << 1;
+    });
 }
 
 MainWindow::~MainWindow()
@@ -115,7 +120,6 @@ QString MainWindow::sizeFormat(QFileInfo info)
 
 void MainWindow::setCurrentPage(QString path)
 {
-    // 测试，遍历C盘
     model->clear();
     model->setColumnCount(4); // 设置列数4列如下，这个不设置标头不会显示
     model->setHeaderData(0, Qt::Horizontal, "名称");
@@ -146,10 +150,17 @@ void MainWindow::setCurrentPage(QString path)
 void MainWindow::openFile(QModelIndex index)
 {
     if (index.isValid()) {
-        // qDebug() << "row" << index.row() << "column" << index.column();
+        // 如果打开文件（夹）不为第一列，把它变为第一列并获得完整路径信息
         if (index.column() != 0)
             index = model->index(index.row(), 0);
-        setCurrentPage(index.data(Qt::UserRole+1).value<QString>());
+        QString absolutePath = index.data(Qt::UserRole+1).value<QString>();
+        QFileInfo info(absolutePath);
+        if (info.isDir())
+            // 是文件夹打开文件夹
+            setCurrentPage(index.data(Qt::UserRole+1).value<QString>());
+        else
+            QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+
     }
 
 }
