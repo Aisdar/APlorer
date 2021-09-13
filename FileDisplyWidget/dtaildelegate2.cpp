@@ -3,17 +3,17 @@
 #include <QDebug>
 #include <QStandardItem>
 
-DtailDelegate2::DtailDelegate2(QObject *parent) : QStyledItemDelegate(parent)
+DetailDelegate2::DetailDelegate2(QObject *parent) : QStyledItemDelegate(parent)
 {
 
 }
 
-QWidget *DtailDelegate2::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+QWidget *DetailDelegate2::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     return nullptr; // 返回空指针，这个项目不可编辑
 }
 
-void DtailDelegate2::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void DetailDelegate2::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     // 绘制略缩文字
     QRect rect = option.rect;
@@ -26,7 +26,7 @@ void DtailDelegate2::paint(QPainter *painter, const QStyleOptionViewItem &option
     painter->drawText(option.rect, text, Qt::AlignVCenter|Qt::AlignLeft);
 }
 
-QSize DtailDelegate2::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QSize DetailDelegate2::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     return QSize(150, option.rect.height()); // 固定宽度
 }

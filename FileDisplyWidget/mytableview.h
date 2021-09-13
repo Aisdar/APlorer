@@ -22,6 +22,7 @@ signals:
 private:
     QModelIndex *openedEdior = nullptr;
 
+
 };
 
 #endif // MYTABLEVIEW_H

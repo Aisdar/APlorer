@@ -1,22 +1,21 @@
-#include "mydelegate.h"
+#include "detaildelegate.h"
 #include <QLineEdit>
 #include <QPainter>
 #include <QDebug>
 #include <QTableView>
 #include <QFileIconProvider>
-#include "data.h"
 #include <QIcon>
 #include <QPixmap>
 #include <QStandardItemModel>
 #include <QDir>
 
 
-MyDelegate::MyDelegate(QWidget *parent) : QStyledItemDelegate(parent)
+DetailDelegate::DetailDelegate(QWidget *parent) : QStyledItemDelegate(parent)
 {
 
 }
 
-QWidget *MyDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+QWidget *DetailDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QLineEdit *editor = new QLineEdit(parent); // 新建一个LineEdit作为编辑器，一定设置好父类，不然显示位置错误
     QString fileName = index.data(Qt::UserRole+1).value<QString>(); // 从ModelIndex中获取Model中文件完整路径数据
@@ -29,24 +28,24 @@ QWidget *MyDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &o
     return editor; // 需要返回编辑器的指针
 }
 
-QSize MyDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QSize DetailDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QSize size = option.rect.size(); // 获得原编辑器的尺寸
     size.setWidth(size.width()+300); // 宽度增加500
     return size;
 }
 
-void MyDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void DetailDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
 
 }
 
-void MyDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void DetailDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     editor->setGeometry(option.rect.adjusted(+30, 0, 0, 0)); // 编辑器只占右边部分
 }
 
-void MyDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void DetailDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QRect rect = option.rect; // 系统的矩形
     QFileIconProvider provider;  // 获得系统图标
@@ -74,7 +73,7 @@ void MyDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, co
 }
 
 
-void MyDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+void DetailDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     QStandardItemModel *smodel = static_cast<QStandardItemModel *>(model);
     QLineEdit *editor1 = static_cast<QLineEdit *>(editor); // 获得原编辑器

@@ -9,19 +9,23 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    bigicondelegate.cpp \
+    detaildelegate.cpp \
     dtaildelegate2.cpp \
     filedisplaywidget.cpp \
+    listdelegate.cpp \
     main.cpp \
     mainwindow.cpp \
-    mydelegate.cpp \
     mytableview.cpp
 
 HEADERS += \
+    bigicondelegate.h \
     data.h \
+    detaildelegate.h \
     dtaildelegate2.h \
     filedisplaywidget.h \
+    listdelegate.h \
     mainwindow.h \
-    mydelegate.h \
     mytableview.h
 
 FORMS += \

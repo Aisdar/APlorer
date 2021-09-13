@@ -5,10 +5,10 @@
 #include <QObject>
 #include <QWidget>
 
-class DtailDelegate2 : public QStyledItemDelegate
+class DetailDelegate2 : public QStyledItemDelegate
 {
 public:
-    explicit DtailDelegate2(QObject *parent = nullptr);
+    explicit DetailDelegate2(QObject *parent = nullptr);
     QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     QSize sizeHint(const QStyleOptionViewItem &option,

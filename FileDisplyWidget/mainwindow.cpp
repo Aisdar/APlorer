@@ -10,10 +10,9 @@
 #include <QFileIconProvider>
 #include <QDir>
 #include "data.h"
-#include "mydelegate.h"
-#include "dtaildelegate2.h"
 #include <QProcess>
 #include <QDesktopServices>
+#include <QSize>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -31,19 +30,18 @@ MainWindow::MainWindow(QWidget *parent)
 //    QHeaderView* hHeaderView = ui->tableView->horizontalHeader();
 //    hHeaderView->setMinimumSectionSize(50); // 最小的表头宽度
 //    hHeaderView->setSectionsMovable(true);
+
+    // 创建代理
+    detailDelegate = new DetailDelegate(this);
+    detailDelegate2 = new DetailDelegate2(this);
+    listDelegate = new ListDelegate(this);
+    bigIconDelegate = new BigIconDelegate(this);
     // model设置完毕，关联TableView
     ui->tableView->setModel(model);
     // ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
     // ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu); // 菜单
-    // 名称显示部分使用代理
-    MyDelegate *delegate = new MyDelegate(this);
-    ui->tableView->setItemDelegateForColumn(0, delegate);
-    // 其他部分也使用代理，做到无法选择的效果
-    DtailDelegate2 *delegate2 = new DtailDelegate2;
-    for (int i = 1; i < 4; ++i)
-        ui->tableView->setItemDelegateForColumn(i, delegate2);
 
-    setCurrentPage("E:/"); // 设置主页为E盘测试
+    setCurrentPage("E:/", LIST); // 设置主页为E盘测试
 
      // connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::openFile); // 连接双击信号和进入目录(废弃）
     connect(ui->tableView, &MyTableView::openFile, this, &MainWindow::openFile);
@@ -84,7 +82,7 @@ void MainWindow::on_pushButton_2_clicked()
 {
     if (dir.cdUp())
         // 返回上一级
-        setCurrentPage(dir.path());
+        setCurrentPage(dir.path(), currentModel);
 }
 
 QString MainWindow::fileType(QFileInfo info)
@@ -118,7 +116,51 @@ QString MainWindow::sizeFormat(QFileInfo info)
         return QString::number(info.size()/(1024*1024)) + "GB";
 }
 
-void MainWindow::setCurrentPage(QString path)
+void MainWindow::setCurrentPage(QString path, DisplayMode displayModel)
+{
+    // 改变当前路径
+    if (path != dir.path())
+        dir.setPath(path);
+    if (currentModel != displayModel) {
+        currentModel = displayModel;
+        QHeaderView* hHeaderView =  ui->tableView->horizontalHeader();
+        switch (currentModel) {
+        case DETAIL:
+            // 名称显示部分使用代理
+            ui->tableView->setItemDelegateForColumn(0, detailDelegate);
+            // 其他部分也使用代理，做到无法选择的效果
+            for (int i = 1; i < 4; ++i)
+                ui->tableView->setItemDelegateForColumn(i, detailDelegate2);
+            break;
+        case LIST:
+            ui->tableView->setItemDelegate(listDelegate);
+            // 隐藏水平表头
+            hHeaderView->setHidden(true);
+            break;
+        case BIGICON:
+            ui->tableView->setItemDelegate(bigIconDelegate);
+            hHeaderView->setHidden(true);
+            break;
+        }
+    }
+    switch (currentModel) {
+    case DETAIL:
+        setDetailModel();
+        break;
+    case LIST:
+        setListModel();
+        break;
+    case BIGICON:
+        setBigIconModel();
+        break;
+    }
+    // 设置tableView的合适宽度,这个大小依赖于代理中的SizeHint
+    ui->tableView->resizeColumnsToContents();
+    ui->tableView->resizeRowsToContents();
+    ui->tableView->selectionModel();
+}
+
+void MainWindow::setDetailModel()
 {
     model->clear();
     model->setColumnCount(4); // 设置列数4列如下，这个不设置标头不会显示
@@ -126,41 +168,102 @@ void MainWindow::setCurrentPage(QString path)
     model->setHeaderData(1, Qt::Horizontal, "修改日期");
     model->setHeaderData(2, Qt::Horizontal, "类型");
     model->setHeaderData(3, Qt::Horizontal, "大小");
-    dir.setPath(path);
+
     // qDebug() << "currentPath:" << dir.currentPath() << " Path:" << dir.path();
     for (auto x: dir.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries)) {
         // 过滤选择不要上一级和本级目录
         // qDebug() << x;
         QStandardItem* item = new QStandardItem; // 第一列需要较为复杂的item
         int row = model->rowCount(); // 每次都是新增列，所以行数为rowCount
-        item->setData(x.absoluteFilePath(), Qt::UserRole+1); // 文件名
+        item->setData(x.fileName(), Qt::DisplayRole); // 排序用文件名
+        item->setData(x.absoluteFilePath(), Qt::UserRole+1); // 文件绝对路径
         item->setData(x.isDir(), Qt::UserRole+2); // 是否为文件夹
         model->setItem(row, 0, item); // 第一列文件名
         model->setItem(row, 1, new QStandardItem(x.lastModified().toString("yyyy/M/d hh:m"))); // 第二列上次修改日期
         model->setItem(row, 2, new QStandardItem(fileType(x))); // 第三列文件类型
         model->setItem(row, 3, new QStandardItem(sizeFormat(x))); // 第四列大小
     }
-    // 设置tableView的合适宽度,这个大小依赖于代理中的SizeHint
+}
 
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->resizeRowsToContents();
-    ui->tableView->selectionModel();
+void MainWindow::setListModel()
+{
+    model->clear();
+    int row = 0;
+    for (auto x: dir.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries)) {
+        // 过滤选择不要上一级和本级目录
+        // qDebug() << x;
+        QStandardItem* item = new QStandardItem; // 第一列需要较为复杂的item
+        item->setData(x.fileName(), Qt::DisplayRole); // 文件名
+        item->setData(x.absoluteFilePath(), Qt::UserRole+1); // 文件绝对路径名
+        static int maxColumn;
+        if (row == 0) {
+            model->setItem(row, 0, item);
+            maxColumn = ui->tableView->contentsRect().height()/ui->tableView->rowHeight(0) - 1;
+            row++;
+        } else {
+            model->setItem(row%maxColumn, row/maxColumn, item);
+            row++;
+        }
+    }
+}
+
+void MainWindow::setBigIconModel()
+{
+    model->clear();
+    int count = 0;
+    for (auto x: dir.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries)) {
+        // 过滤选择不要上一级和本级目录
+        // qDebug() << x;
+        QStandardItem* item = new QStandardItem; // 第一列需要较为复杂的item
+        item->setData(x.fileName(), Qt::DisplayRole); // 文件名
+        item->setData(x.absoluteFilePath(), Qt::UserRole+1); // 文件绝对路径名
+        static int maxColumn;
+        if (count == 0) {
+            model->setItem(count, 0, item);
+            maxColumn = ui->tableView->contentsRect().width()/ui->tableView->columnWidth(0) - 1;
+            qDebug() << maxColumn;
+            count++;
+        } else {
+            model->setItem(count/maxColumn, count%maxColumn, item);
+            count++;
+        }
+    }
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    if (currentModel == LIST) {
+        this->setCurrentPage(dir.absolutePath(), LIST);
+    }
 }
 
 void MainWindow::openFile(QModelIndex index)
 {
     if (index.isValid()) {
-        // 如果打开文件（夹）不为第一列，把它变为第一列并获得完整路径信息
-        if (index.column() != 0)
-            index = model->index(index.row(), 0);
-        QString absolutePath = index.data(Qt::UserRole+1).value<QString>();
-        QFileInfo info(absolutePath);
-        if (info.isDir())
-            // 是文件夹打开文件夹
-            setCurrentPage(index.data(Qt::UserRole+1).value<QString>());
-        else
-            QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
-
+        QString absolutePath;
+        QFileInfo info;
+        switch (currentModel) {
+        case DETAIL:
+            if (index.column() != 0)
+                index = model->index(index.row(), 0);
+            absolutePath = index.data(Qt::UserRole+1).value<QString>();
+            info.setFile(absolutePath);
+            if (info.isDir())
+                // 是文件夹打开文件夹
+                setCurrentPage(index.data(Qt::UserRole+1).value<QString>(), currentModel);
+            else
+                QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+            break;
+        case LIST:
+            absolutePath = index.data(Qt::UserRole+1).value<QString>();
+            info.setFile(absolutePath);
+            if (info.isDir())
+                // 是文件夹打开文件夹
+                setCurrentPage(index.data(Qt::UserRole+1).value<QString>(), currentModel);
+            else
+                QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+            break;
+        }
     }
 
 }
