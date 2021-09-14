@@ -30,6 +30,35 @@
      </widget>
     </item>
     <item>
+     <widget class="QComboBox" name="comboBox">
+      <item>
+       <property name="text">
+        <string>BigIcon</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>ExBigIcon</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>List</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Detail</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MidIcon</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item>
      <widget class="MyTableView" name="tableView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">

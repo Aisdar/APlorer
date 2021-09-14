@@ -27,7 +27,9 @@ public:
     enum DisplayMode {
         DETAIL, // 详细信息模式
         LIST, // 列表模式
-        BIGICON // 大图标模式
+        BIGICON, // 大图标模式
+        EXBIGICION, // 超大图标
+        MIDICON // 中图标
     };
 
 private slots:
@@ -39,6 +41,8 @@ private slots:
 
     // void closeEditor(QModelIndex index);
 
+    void on_comboBox_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
     QStandardItem *item;
@@ -48,7 +52,7 @@ private:
     DetailDelegate *detailDelegate;
     DetailDelegate2 *detailDelegate2;
     ListDelegate *listDelegate;
-    BigIconDelegate *bigIconDelegate;
+    BigIconDelegate *bigIconDelegate, *exbigIconDelegate, *midIconDelegate;
 
     QString fileType(QFileInfo info); // 获得文件类型
     QString sizeFormat(QFileInfo info); // 获得文件大小信息

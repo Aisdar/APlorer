@@ -8,7 +8,15 @@
 class BigIconDelegate : public QStyledItemDelegate
 {
 public:
+    enum IconSize{
+        ExBigIcon,
+        BigIcon,
+        MidIcon,
+        SmallIcon
+    };
+
     explicit BigIconDelegate(QObject *parent = nullptr);
+    explicit BigIconDelegate(IconSize size, QObject *parent = nullptr);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const override;
@@ -20,6 +28,12 @@ public:
                    const QModelIndex &index) const override;
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                               const QModelIndex &index) const override;
+
+    static QIcon getIcon(QString path , IconSize size);
+
+private:
+    enum IconSize size;
+    static QSize rectSize;
 };
 
 #endif // BIGICONDELEGATE_H

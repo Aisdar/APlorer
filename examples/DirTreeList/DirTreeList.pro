@@ -10,9 +10,11 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
+    mydelegate.cpp \
     widget.cpp
 
 HEADERS += \
+    mydelegate.h \
     widget.h
 
 FORMS += \

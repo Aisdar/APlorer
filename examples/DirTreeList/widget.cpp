@@ -2,6 +2,8 @@
 #include "ui_widget.h"
 #include <QFileSystemModel>
 #include <QDebug>
+#include <QStandardItemModel>
+#include "mydelegate.h"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -12,11 +14,17 @@ Widget::Widget(QWidget *parent)
     model = new QFileSystemModel(this);
 
     ui->treeView->setModel(model);
-    ui->listView->setModel(model);
+   //  ui->listView->setModel(model);
 
+    QStandardItemModel *model1 = new QStandardItemModel;
+    model1->setItem(0, 0, new QStandardItem("111"));
+    ui->listView->setModel(model1);
+    ui->listView->setEditTriggers(QListView::DoubleClicked | QAbstractItemView::SelectedClicked);
+    ui->listView->setItemDelegate(new MyDelegate);
     init();
 
     model->setRootPath("C:\\");
+
 }
 
 Widget::~Widget()
@@ -32,7 +40,7 @@ void Widget::init()
     ui->treeView->hideColumn(3);
     // 绑定一些信号
     connect(ui->treeView, &QTreeView::clicked, this, &Widget::treeViewIndexClicked);
-    connect(ui->listView, &QListView::doubleClicked, this, &Widget::listViewIndexDoubleClicked);
+    // connect(ui->listView, &QListView::doubleClicked, this, &Widget::listViewIndexDoubleClicked);
 
     // List
     ui->listView->setResizeMode(QListView::Adjust);   // 设置大小模式自动调节
@@ -44,7 +52,7 @@ void Widget::init()
     connect(ui->BtnIcon, &QPushButton::clicked, this, [=]{
        ui->listView->setViewMode(QListView::ViewMode::IconMode);
 
-       ui->listView->setIconSize(QSize(300, 300));
+       ui->listView->setIconSize(QSize(100, 100));
        ui->listView->setGridSize(QSize(100, 100));
 
     });

@@ -35,13 +35,15 @@ MainWindow::MainWindow(QWidget *parent)
     detailDelegate = new DetailDelegate(this);
     detailDelegate2 = new DetailDelegate2(this);
     listDelegate = new ListDelegate(this);
-    bigIconDelegate = new BigIconDelegate(this);
+    exbigIconDelegate = new BigIconDelegate(BigIconDelegate::ExBigIcon, this);
+    bigIconDelegate = new BigIconDelegate(BigIconDelegate::BigIcon, this);
+    midIconDelegate = new BigIconDelegate(BigIconDelegate::MidIcon, this);
     // model设置完毕，关联TableView
     ui->tableView->setModel(model);
     // ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
     // ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu); // 菜单
 
-    setCurrentPage("E:/", LIST); // 设置主页为E盘测试
+    setCurrentPage("E:/", BIGICON); // 设置主页为E盘测试
 
      // connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::openFile); // 连接双击信号和进入目录(废弃）
     connect(ui->tableView, &MyTableView::openFile, this, &MainWindow::openFile);
@@ -141,6 +143,14 @@ void MainWindow::setCurrentPage(QString path, DisplayMode displayModel)
             ui->tableView->setItemDelegate(bigIconDelegate);
             hHeaderView->setHidden(true);
             break;
+        case EXBIGICION:
+            ui->tableView->setItemDelegate(exbigIconDelegate);
+            hHeaderView->setHidden(true);
+            break;
+        case MIDICON:
+            ui->tableView->setItemDelegate(midIconDelegate);
+            hHeaderView->setHidden(true);
+            break;
         }
     }
     switch (currentModel) {
@@ -151,6 +161,8 @@ void MainWindow::setCurrentPage(QString path, DisplayMode displayModel)
         setListModel();
         break;
     case BIGICON:
+    case EXBIGICION:
+    case MIDICON:
         setBigIconModel();
         break;
     }
@@ -220,7 +232,9 @@ void MainWindow::setBigIconModel()
         static int maxColumn;
         if (count == 0) {
             model->setItem(count, 0, item);
-            maxColumn = ui->tableView->contentsRect().width()/ui->tableView->columnWidth(0) - 1;
+            qDebug() << ui->tableView->contentsRect().width();
+            qDebug() << ui->tableView->columnWidth(0)+ui->tableView->columnSpan(0, 0);
+            maxColumn = ui->tableView->contentsRect().width()/150;
             qDebug() << maxColumn;
             count++;
         } else {
@@ -263,10 +277,34 @@ void MainWindow::openFile(QModelIndex index)
             else
                 QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
             break;
+        case BIGICON:
+            absolutePath = index.data(Qt::UserRole+1).value<QString>();
+            info.setFile(absolutePath);
+            if (info.isDir())
+                // 是文件夹打开文件夹
+                setCurrentPage(index.data(Qt::UserRole+1).value<QString>(), currentModel);
+            else
+                QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+            break;
         }
+
     }
 
 }
 
 
+
+
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    static QMap<QString, DisplayMode> disk;
+    disk.insert("BigIcon", DisplayMode::BIGICON);
+    disk.insert("ExBigIcon", DisplayMode::EXBIGICION);
+    disk.insert("MidIcon", DisplayMode::MIDICON);
+    disk.insert("List", DisplayMode::LIST);
+    disk.insert("Detail", DisplayMode::DETAIL);
+    QString text = ui->comboBox->currentText();
+    DisplayMode currentMode = disk.value(text);
+    setCurrentPage(dir.path(), currentMode);
+}
 

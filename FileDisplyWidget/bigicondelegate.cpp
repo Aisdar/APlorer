@@ -8,64 +8,67 @@
 #include <QtWinExtras/QtWinExtras>
 #include <QIcon>
 #include <QPixmap>
-#include <shellapi.h>
 #include <windows.h>
 #include <QFileInfo>
-// #include <commoncontrols.h>
+#include <QtWinExtras/QtWin>
+#include <QMessageBox>
+#include <shellapi.h>
+#include <initguid.h>
 #include <commctrl.h>
+#include <commoncontrols.h>
 
 
-QIcon getIcon(QString path)
+QSize BigIconDelegate::rectSize = QSize(150, 150);
+
+QIcon BigIconDelegate::getIcon(QString path, IconSize size)
 {
-    QFileInfo info(path);
     Q_GUI_EXPORT QPixmap qt_pixmapFromWinHICON(HICON icon);
-    SHFILEINFOA psfi;
-    // qDebug() << info.suffix();
-    if (info.suffix().isEmpty())
-        SHGetFileInfoA(info.suffix().toStdString().c_str(),NULL,&psfi,
-                       sizeof(SHFILEINFOA),SHGFI_SYSICONINDEX | SHGFI_ICON | SHGFI_LARGEICON);
+    QFileInfo info(path);
+    SHFILEINFOW psfi;
+    if (info.suffix() == "")
+        SHGetFileInfo((CONST TCHAR*)info.suffix().utf16(), -1, &psfi, sizeof(psfi), SHGFI_SYSICONINDEX);
     else {
-        qDebug() << QString(".") + info.suffix();
-        SHGetFileInfoA((QString(".") + info.suffix()).toStdString().c_str(),
-                       NULL,&psfi,sizeof(SHFILEINFOA),SHGFI_ICON);
+        QString suffix = path;
+        suffix.replace("/", "\\");
+        SHGetFileInfo((CONST TCHAR*)suffix.utf16(), -1, &psfi, sizeof(psfi), SHGFI_SYSICONINDEX);
     }
-    QPixmap pixmap = qt_pixmapFromWinHICON(psfi.hIcon);
-    DestroyIcon(psfi.hIcon);
-    return QIcon(pixmap);
-
-//    static bool bInit = false;
-//    static IImageList *imageList = NULL;
-
-//    if (!bInit && imageList == NULL)
-//    {
-//        bInit = true;
-//        IID IID_IImageList = { 0 };
-//        HRESULT hr = IIDFromString(L"{46EB5926-582E-4017-9FDF-E8998DAA0950}", &IID_IImageList);
-//        // ASSERT(SUCCEEDED(hr));
-//        SHGetImageList(SHIL_EXTRALARGE, IID_IImageList, (void **)(&imageList));
-//    }
-
-//    SHFILEINFOA info = { 0 };
-//    if (SHGetFileInfoA(info1.suffix().toStdString().c_str(), FILE_ATTRIBUTE_DIRECTORY, &info, sizeof(info), SHGFI_ICON | SHGFI_DISPLAYNAME))
-//    {
-//        HICON hIcon = info.hIcon;
-//        if (imageList)
-//        {
-
-//            hIcon = ImageList_GetIcon((HIMAGELIST)imageList, info.iIcon, 0);
-//            if (hIcon)
-//                DestroyIcon(info.hIcon);
-//            else
-//                hIcon = info.hIcon;
-//        }
-//        return QIcon(QtWin::fromHICON(hIcon));
-//    }
+    IImageList* imageList = nullptr;
+    int type;
+    switch (size) {
+    case ExBigIcon:
+        type = 4;
+        break;
+    case BigIcon:
+        type = 4;
+        break;
+    case MidIcon:
+        type = SHIL_EXTRALARGE;
+        break;
+    case SmallIcon:
+        type = SHIL_SMALL;
+        break;
+    }
+    SHGetImageList(type, IID_IImageList, (void ** )&imageList);
+    HICON hIcon;
+    imageList->GetIcon(psfi.iIcon, ILD_TRANSPARENT, &hIcon);
+    QPixmap pix = qt_pixmapFromWinHICON(hIcon);
+    return QIcon(pix);
 }
+
+
+
 
 BigIconDelegate::BigIconDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
 
 }
+
+BigIconDelegate::BigIconDelegate(IconSize size, QObject *parent) :
+    QStyledItemDelegate(parent), size(size)
+{
+
+}
+
 
 QWidget *BigIconDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
@@ -83,22 +86,61 @@ QWidget *BigIconDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
 void BigIconDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QRect rect = option.rect; // 系统的矩形
-    QFileIconProvider provider;  // 获得系统图标
     QString fileName = index.data(Qt::UserRole+1).value<QString>(); // 获取在索引中的文件绝对路径
     QFileInfo info(fileName); // 获得对应路径下的文件信息
-//    bool isDir = index.data(Qt::UserRole+2).value<bool>(); // 通过是否为文件夹获得对应图标
-    QPixmap pixmap = getIcon(fileName).pixmap(48, 48);
-    // icon.paint(painter, rect, Qt::AlignLeft); // 在左侧绘制图标，宽度大概为30
+    // (200, 150)
+    QSize iconSize;
+    int fontLength;
+    int adjustWidth, adjustHeight1, adjustHeight2;
+    switch (size) {
+    case BigIcon:
+        iconSize = QSize(128, 128);
+        fontLength = 12;
+        adjustHeight1 = 5;
+        break;
+    case ExBigIcon:
+        iconSize = QSize(256, 256);
+        fontLength = 30;
+        adjustHeight1 = 5;
+        break;
+    case MidIcon:
+        iconSize = QSize(48, 48);
+        fontLength = 10;
+        adjustHeight1 = 3;
+        break;
+    }
+
+    QPixmap pixmap = getIcon(fileName, size).pixmap(iconSize);
+    // QIcon icon1 = getIcon(fileName, size);
     painter->save();
     painter->setPen(QPen(Qt::red));
     painter->drawRect(rect);
     painter->restore();
-    painter->drawPixmap(rect.adjusted(+51, 0, -51, -102), pixmap);
+    adjustWidth = (rectSize.width()-iconSize.width()) / 2;
+    adjustHeight2 = rectSize.height() - iconSize.height() - adjustHeight1;
+//    qDebug() << adjustWidth;
+//    qDebug() << adjustHeight1;
+//    qDebug() << adjustHeight2;
+     painter->drawPixmap(rect.adjusted(+adjustWidth, +adjustHeight1,
+                                       -adjustWidth, -adjustHeight2), pixmap);
+    //  icon1.paint(painter, rect.adjusted(+adjustWidth, +adjustWidth,
+                                 //      -adjustWidth, -adjustHeight2), Qt::AlignCenter);
     // painter->drawImage(rect.adjusted(0, 0, 0, +8), pixmap.toImage());
-    // 设置文字略缩样式
+
     QString text = info.fileName();
-    painter->drawText(rect.adjusted(+30, 0, 0, 0), Qt::AlignVCenter|Qt::AlignLeft, text); // 画出文件名的文字
+    QString displayText = "";
+    if (text.length() > fontLength) {
+        for (int i = 0; i < text.length()/fontLength; i++) {
+            displayText += text.mid(i, fontLength) + "\n";
+        }
+        displayText += text.mid(text.length()-text.length()%fontLength, text.length()%fontLength);
+    } else {
+        displayText = text;
+    }
+    painter->drawText(rect.adjusted(0, +iconSize.height()-adjustHeight1, 0, 0),
+                      Qt::AlignCenter, displayText); // 画出文件名的文字
 }
+
 
 void BigIconDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
@@ -117,12 +159,22 @@ void BigIconDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, c
     }
 }
 
+
 QSize BigIconDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QSize size = option.rect.size(); // 获得原编辑器的尺寸
-    size.setWidth(size.width()+300); // 宽度增加500
-    size.setHeight(size.height()+300); // 高度加300
-    return QSize(150, 150);
+//  QSize rectSize;
+    switch (size) {
+    case BigIcon:
+        rectSize = QSize(150, 150);
+        break;
+    case ExBigIcon:
+        rectSize = QSize(275, 275);
+        break;
+    case MidIcon:
+        rectSize = QSize(90, 90);
+        break;
+    }
+    return rectSize;
 }
 
 void BigIconDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
