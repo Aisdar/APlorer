@@ -10,3 +10,4 @@ debug或者release目录下需要有Everything.exe以及Everything32/64.dll
 软件的编译请选择MinGW32/64
 
 ![image-20210905165339720](https://raw.githubusercontent.com/lyhellcat/Pic/master/img/image-20210905165339720.png)
+
