@@ -105,6 +105,7 @@ void SearchWindow::on_lineEdit_textChanged(const QString &keywords)
 
 void SearchWindow::slot_context_menu(QPoint pos)
 {
+    qDebug() << QString::fromLocal8Bit("弹出菜单");
     idx = ui->tableView->indexAt(pos);
     if (idx.isValid()) {
         popMenu->exec(QCursor::pos());

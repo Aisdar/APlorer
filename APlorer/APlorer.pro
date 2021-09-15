@@ -12,7 +12,9 @@ SOURCES += \
     SearchWindow.cpp \
     aplmainwindow.cpp \
     aplsingleapplication.cpp \
+    cfilelistview.cpp \
     countthefilesizeofeachcategory.cpp \
+    cshell.cpp \
     customstyle.cpp \
     driverwidget.cpp \
     everythingutil.cpp \
@@ -21,9 +23,11 @@ SOURCES += \
     tabbar.cpp
 
 HEADERS += \
+    CShell.h \
     SearchWindow.h \
     aplmainwindow.h \
     aplsingleapplication.h \
+    cfilelistview.h \
     countthefilesizeofeachcategory.h \
     customstyle.h \
     driverwidget.h \
@@ -57,4 +61,8 @@ INCLUDEPATH += $$PWD/include
 
 LIBS += -L$$PWD/lib -lEverything64
 
-DISTFILES +=
+DISTFILES += \
+    assert/assert.pri
+
+
+include (assert/assert.pri)
