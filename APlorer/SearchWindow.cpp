@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QDateTime>
+#include <QUrl>
 
 SearchWindow::SearchWindow(QWidget *parent)
     : QMainWindow(parent)
