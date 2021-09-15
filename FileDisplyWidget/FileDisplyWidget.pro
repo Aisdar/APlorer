@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     bigicondelegate.cpp \
+    contentdelegate.cpp \
     detaildelegate.cpp \
     dtaildelegate2.cpp \
     filedisplaywidget.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     bigicondelegate.h \
+    contentdelegate.h \
     data.h \
     detaildelegate.h \
     dtaildelegate2.h \

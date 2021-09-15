@@ -10,6 +10,7 @@
 #include "dtaildelegate2.h"
 #include "listdelegate.h"
 #include "bigicondelegate.h"
+#include "contentdelegate.h"
 #include <QDir>
 #include <QEvent>
 
@@ -29,7 +30,8 @@ public:
         LIST, // 列表模式
         BIGICON, // 大图标模式
         EXBIGICION, // 超大图标
-        MIDICON // 中图标
+        MIDICON, // 中图标
+        CONTENT // 内容
     };
 
 private slots:
@@ -53,15 +55,20 @@ private:
     DetailDelegate2 *detailDelegate2;
     ListDelegate *listDelegate;
     BigIconDelegate *bigIconDelegate, *exbigIconDelegate, *midIconDelegate;
+    ContentDelegate *contentDelegate;
 
-    QString fileType(QFileInfo info); // 获得文件类型
-    QString sizeFormat(QFileInfo info); // 获得文件大小信息
 
     void setCurrentPage(QString path, DisplayMode displayModel); // 设置最近页面
     void setDetailModel(); // 设置详细信息显示模式
     void setListModel(); // 设置列表显示模式
     void setBigIconModel(); // 设置大图标显示模型
+    void setContentModel(); // 设置内容显示模型
     void resizeEvent(QResizeEvent *event) override;
 
+public:
+
+    QString static fileType(QFileInfo info); // 获得文件类型
+    QString static sizeFormat(QFileInfo info); // 获得文件大小信息
+    DisplayMode getCurrentModel() {return currentModel;};
 };
 #endif // MAINWINDOW_H

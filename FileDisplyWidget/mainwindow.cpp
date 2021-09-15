@@ -23,13 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     // 文件信息显示的model
     model = new QStandardItemModel(this);
-//    // 隐藏垂直标头
-//    QHeaderView* vHeaderView =  ui->tableView->verticalHeader();
-//    vHeaderView->setHidden(true);
-//    // 平行标头可移动
-//    QHeaderView* hHeaderView = ui->tableView->horizontalHeader();
-//    hHeaderView->setMinimumSectionSize(50); // 最小的表头宽度
-//    hHeaderView->setSectionsMovable(true);
 
     // 创建代理
     detailDelegate = new DetailDelegate(this);
@@ -38,12 +31,13 @@ MainWindow::MainWindow(QWidget *parent)
     exbigIconDelegate = new BigIconDelegate(BigIconDelegate::ExBigIcon, this);
     bigIconDelegate = new BigIconDelegate(BigIconDelegate::BigIcon, this);
     midIconDelegate = new BigIconDelegate(BigIconDelegate::MidIcon, this);
+    contentDelegate = new ContentDelegate(this);
     // model设置完毕，关联TableView
     ui->tableView->setModel(model);
     // ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
     // ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu); // 菜单
 
-    setCurrentPage("E:/", BIGICON); // 设置主页为E盘测试
+    setCurrentPage("E:\\", BIGICON); // 设置主页为E盘测试
 
      // connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::openFile); // 连接双击信号和进入目录(废弃）
     connect(ui->tableView, &MyTableView::openFile, this, &MainWindow::openFile);
@@ -135,20 +129,32 @@ void MainWindow::setCurrentPage(QString path, DisplayMode displayModel)
                 ui->tableView->setItemDelegateForColumn(i, detailDelegate2);
             break;
         case LIST:
+            for (int i = 0; i < 4; ++i)
+                ui->tableView->setItemDelegateForColumn(i, listDelegate);
             ui->tableView->setItemDelegate(listDelegate);
             // 隐藏水平表头
             hHeaderView->setHidden(true);
             break;
         case BIGICON:
+            for (int i = 0; i < 4; ++i)
+                ui->tableView->setItemDelegateForColumn(i, bigIconDelegate);
             ui->tableView->setItemDelegate(bigIconDelegate);
             hHeaderView->setHidden(true);
             break;
         case EXBIGICION:
+            for (int i = 0; i < 4; ++i)
+                ui->tableView->setItemDelegateForColumn(i, exbigIconDelegate);
             ui->tableView->setItemDelegate(exbigIconDelegate);
             hHeaderView->setHidden(true);
             break;
         case MIDICON:
+            for (int i = 0; i < 4; ++i)
+                ui->tableView->setItemDelegateForColumn(i, midIconDelegate);
             ui->tableView->setItemDelegate(midIconDelegate);
+            hHeaderView->setHidden(true);
+            break;
+        case CONTENT:
+            ui->tableView->setItemDelegateForColumn(0, contentDelegate);
             hHeaderView->setHidden(true);
             break;
         }
@@ -165,6 +171,8 @@ void MainWindow::setCurrentPage(QString path, DisplayMode displayModel)
     case MIDICON:
         setBigIconModel();
         break;
+    case CONTENT:
+        setContentModel();
     }
     // 设置tableView的合适宽度,这个大小依赖于代理中的SizeHint
     ui->tableView->resizeColumnsToContents();
@@ -232,10 +240,9 @@ void MainWindow::setBigIconModel()
         static int maxColumn;
         if (count == 0) {
             model->setItem(count, 0, item);
-            qDebug() << ui->tableView->contentsRect().width();
-            qDebug() << ui->tableView->columnWidth(0)+ui->tableView->columnSpan(0, 0);
-            maxColumn = ui->tableView->contentsRect().width()/150;
-            qDebug() << maxColumn;
+            QAbstractItemDelegate *delegate = ui->tableView->itemDelegate();
+            BigIconDelegate *delegate1 = static_cast<BigIconDelegate *>(delegate);
+            maxColumn = ui->tableView->contentsRect().width()/delegate1->rectSize.width();
             count++;
         } else {
             model->setItem(count/maxColumn, count%maxColumn, item);
@@ -244,10 +251,24 @@ void MainWindow::setBigIconModel()
     }
 }
 
+void MainWindow::setContentModel()
+{
+    model->clear();
+    int count = 0;
+    for (auto x: dir.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries)) {
+        // 过滤选择不要上一级和本级目录
+        QStandardItem* item = new QStandardItem; // 第一列需要较为复杂的item
+        item->setData(x.fileName(), Qt::DisplayRole); // 文件名
+        item->setData(x.absoluteFilePath(), Qt::UserRole+1); // 文件绝对路径名
+        model->setItem(count, 0, item);
+        count++;
+    }
+}
+
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    if (currentModel == LIST) {
-        this->setCurrentPage(dir.absolutePath(), LIST);
+    if (currentModel != DETAIL) {
+        this->setCurrentPage(dir.absolutePath(), currentModel);
     }
 }
 
@@ -278,6 +299,9 @@ void MainWindow::openFile(QModelIndex index)
                 QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
             break;
         case BIGICON:
+        case MIDICON:
+        case EXBIGICION:
+        case CONTENT:
             absolutePath = index.data(Qt::UserRole+1).value<QString>();
             info.setFile(absolutePath);
             if (info.isDir())
@@ -294,7 +318,6 @@ void MainWindow::openFile(QModelIndex index)
 
 
 
-
 void MainWindow::on_comboBox_currentIndexChanged(int index)
 {
     static QMap<QString, DisplayMode> disk;
@@ -303,8 +326,10 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     disk.insert("MidIcon", DisplayMode::MIDICON);
     disk.insert("List", DisplayMode::LIST);
     disk.insert("Detail", DisplayMode::DETAIL);
+    disk.insert("Content", DisplayMode::CONTENT);
     QString text = ui->comboBox->currentText();
     DisplayMode currentMode = disk.value(text);
     setCurrentPage(dir.path(), currentMode);
+    resize(width()+1, height()+1);
 }
 

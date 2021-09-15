@@ -16,6 +16,7 @@
 #include <initguid.h>
 #include <commctrl.h>
 #include <commoncontrols.h>
+#include <QFontMetrics>
 
 
 QSize BigIconDelegate::rectSize = QSize(150, 150);
@@ -44,9 +45,6 @@ QIcon BigIconDelegate::getIcon(QString path, IconSize size)
     case MidIcon:
         type = SHIL_EXTRALARGE;
         break;
-    case SmallIcon:
-        type = SHIL_SMALL;
-        break;
     }
     SHGetImageList(type, IID_IImageList, (void ** )&imageList);
     HICON hIcon;
@@ -56,11 +54,46 @@ QIcon BigIconDelegate::getIcon(QString path, IconSize size)
 }
 
 
+QString BigIconDelegate::stringFomat(QString text, BigIconDelegate::IconSize size) {
+    QFontMetrics metrics(text);
+    QString temp;
+    int rectWidth;
+    switch (size) {
+    case BigIconDelegate::BigIcon:
+        rectWidth = 140;
+        break;
+    case BigIconDelegate::ExBigIcon:
+        rectWidth = 265;
+        break;
+    case BigIconDelegate::MidIcon:
+        rectWidth = 80;
+        break;
+    }
+    int hopeWidth = metrics.width(text);
+    if (hopeWidth > rectWidth) {
+        int start = 0, length = 1;
+        int lines = hopeWidth/rectWidth;
+        for (int i = 0; i < lines && i < 3; ++i) {
+            while (metrics.width(text.mid(start, length)) < rectWidth) {
+                length++;
+            }
+            temp += text.mid(start, length-1) + "\n";
+            start += length - 1;
+            length = 1;
+        }
+        if (lines > 4) {
+            temp += metrics.elidedText(text.mid(start, text.length()-start), Qt::ElideRight, rectWidth);
+        } else
+            temp += text.mid(start, text.length()-start);
+        text = temp;
+    }
+    return text;
+}
 
 
 BigIconDelegate::BigIconDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
-
+    size = BigIcon;
 }
 
 BigIconDelegate::BigIconDelegate(IconSize size, QObject *parent) :
@@ -86,59 +119,43 @@ QWidget *BigIconDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
 void BigIconDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QRect rect = option.rect; // 系统的矩形
-    QString fileName = index.data(Qt::UserRole+1).value<QString>(); // 获取在索引中的文件绝对路径
-    QFileInfo info(fileName); // 获得对应路径下的文件信息
+    QString absolutePath = index.data(Qt::UserRole+1).value<QString>(); // 获取在索引中的文件绝对路径
+    if (absolutePath.isEmpty())
+        return;
+    QFileInfo info(absolutePath); // 获得对应路径下的文件信息
     // (200, 150)
-    QSize iconSize;
-    int fontLength;
     int adjustWidth, adjustHeight1, adjustHeight2;
+    QFontMetrics metrics(info.fileName());
+    QSize iconSize;
+    int lines;
     switch (size) {
     case BigIcon:
         iconSize = QSize(128, 128);
-        fontLength = 12;
-        adjustHeight1 = 5;
+        adjustHeight1 = 10;
+        lines = metrics.width(info.fileName())/140 + 1;
         break;
     case ExBigIcon:
         iconSize = QSize(256, 256);
-        fontLength = 30;
-        adjustHeight1 = 5;
+        adjustHeight1 = 13;
+        lines = metrics.width(info.fileName())/256 + 1;
         break;
     case MidIcon:
         iconSize = QSize(48, 48);
-        fontLength = 10;
+        lines = metrics.width(info.fileName())/80 + 1;
         adjustHeight1 = 3;
         break;
     }
 
-    QPixmap pixmap = getIcon(fileName, size).pixmap(iconSize);
-    // QIcon icon1 = getIcon(fileName, size);
-    painter->save();
-    painter->setPen(QPen(Qt::red));
-    painter->drawRect(rect);
-    painter->restore();
+    QPixmap pixmap = getIcon(absolutePath, size).pixmap(iconSize);
     adjustWidth = (rectSize.width()-iconSize.width()) / 2;
     adjustHeight2 = rectSize.height() - iconSize.height() - adjustHeight1;
-//    qDebug() << adjustWidth;
-//    qDebug() << adjustHeight1;
-//    qDebug() << adjustHeight2;
-     painter->drawPixmap(rect.adjusted(+adjustWidth, +adjustHeight1,
-                                       -adjustWidth, -adjustHeight2), pixmap);
-    //  icon1.paint(painter, rect.adjusted(+adjustWidth, +adjustWidth,
-                                 //      -adjustWidth, -adjustHeight2), Qt::AlignCenter);
-    // painter->drawImage(rect.adjusted(0, 0, 0, +8), pixmap.toImage());
+    QRect targetRect = rect.adjusted(+adjustWidth, 0, -adjustWidth, 0);
+    targetRect.setHeight(iconSize.height());
+    targetRect = targetRect.adjusted(0, +adjustHeight1, 0, +adjustHeight1);
+    painter->drawPixmap(targetRect, pixmap);
 
-    QString text = info.fileName();
-    QString displayText = "";
-    if (text.length() > fontLength) {
-        for (int i = 0; i < text.length()/fontLength; i++) {
-            displayText += text.mid(i, fontLength) + "\n";
-        }
-        displayText += text.mid(text.length()-text.length()%fontLength, text.length()%fontLength);
-    } else {
-        displayText = text;
-    }
-    painter->drawText(rect.adjusted(0, +iconSize.height()-adjustHeight1, 0, 0),
-                      Qt::AlignCenter, displayText); // 画出文件名的文字
+    painter->drawText(rect.adjusted(+0, +iconSize.height(), 0, 0),
+                      Qt::AlignHCenter| Qt::AlignTop, stringFomat(info.fileName(), size)); // 画出文件名的文字
 }
 
 
@@ -162,22 +179,60 @@ void BigIconDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, c
 
 QSize BigIconDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-//  QSize rectSize;
+    QString fileName = index.data().toString();
     switch (size) {
-    case BigIcon:
-        rectSize = QSize(150, 150);
+    case BigIcon: {
+        QFontMetrics metrics(stringFomat(fileName, size));
+        int lines = metrics.width(fileName)/140 + 1;
+        if (lines > 4)
+            lines = 4;
+        rectSize = QSize(150, lines*metrics.height()+128+10+5);
         break;
-    case ExBigIcon:
-        rectSize = QSize(275, 275);
+    }
+    case ExBigIcon: {
+        QFontMetrics metrics(fileName);
+        int lines = metrics.width(fileName)/265 + 1;
+        if (lines > 4)
+            lines = 4;
+        rectSize = QSize(275, lines*metrics.height()+256+13+5);
         break;
-    case MidIcon:
-        rectSize = QSize(90, 90);
+    }
+    case MidIcon: {
+        QFontMetrics metrics(stringFomat(fileName, size));
+        int lines = metrics.width(fileName)/80 + 1;
+        if (lines > 4)
+            lines = 4;
+        rectSize = QSize(90, lines*metrics.height()+64+5+5);
         break;
+    }
     }
     return rectSize;
 }
 
 void BigIconDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    editor->setGeometry(option.rect.adjusted(+30, 0, 0, 0)); // 编辑器只占右边部分
+    QLineEdit *lineEdit = static_cast<QLineEdit *>(editor);
+    int adjustHeight1;
+    QSize iconSize;
+    switch (size) {
+    case BigIcon:
+        iconSize = QSize(128, 128);
+        adjustHeight1 = 10;
+        break;
+    case ExBigIcon:
+        iconSize = QSize(256, 256);
+        adjustHeight1 = 13;
+        break;
+    case MidIcon:
+        iconSize = QSize(48, 48);
+        adjustHeight1 = 3;
+        break;
+    }
+    QRect rect = option.rect;
+    QFontMetrics metrics(lineEdit->text());
+    rect.setWidth(metrics.width(lineEdit->text()));
+    rect.setHeight(metrics.height());
+    rect = rect.adjusted(0, +iconSize.height()-adjustHeight1, 0, +iconSize.height()-adjustHeight1);
+    lineEdit->setAlignment(Qt::AlignHCenter);
+    editor->setGeometry(option.rect.adjusted(0, +iconSize.height()-adjustHeight1, 0, 0)); // 编辑器只占右边部分
 }
