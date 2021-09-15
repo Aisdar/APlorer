@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QVector>
+#include <QFileInfo>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,10 +21,6 @@ public:
 
 private slots:
     void on_lineEdit_textChanged(const QString &);
-    void slot_context_menu(QPoint);
-    void slot_open_file();
-    void slot_delete_file();
-    void slot_copy_file_path();
 
 private:
     Ui::MainWindow *ui;
@@ -31,7 +29,7 @@ private:
     QSortFilterProxyModel *proxyModel;
     QModelIndex idx;
     QString search_arg;
-    void initPopMenu();
+    QVector<QFileInfo> fileInfos;
 };
 
 #endif // SEARCHWINDOW_H

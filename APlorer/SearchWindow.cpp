@@ -1,9 +1,7 @@
-﻿#pragma execution_character_set("utf-8")
-
-#include "SearchWindow.h"
+﻿#include "SearchWindow.h"
 #include "ui_SearchWindow.h"
 #include "everythingutil.h"
-
+#include "CShell.h"
 #include <QFileIconProvider>
 #include <QVector>
 #include <QDesktopServices>
@@ -12,6 +10,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QUrl>
+#include <QMouseEvent>
 
 SearchWindow::SearchWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -33,7 +32,7 @@ SearchWindow::SearchWindow(QWidget *parent)
     this->ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     this->ui->tableView->setSortingEnabled(true);
 
-    initPopMenu();
+
     on_lineEdit_textChanged("");
 }
 
@@ -75,7 +74,9 @@ void SearchWindow::on_lineEdit_textChanged(const QString &keywords)
     this->model->setHorizontalHeaderItem(3, new QStandardItem("大小"));
     this->model->setHorizontalHeaderItem(4, new QStandardItem("修改日期"));
 
-    QVector<QFileInfo> fileInfos = EveryThingUtil::Search(search_arg);
+    fileInfos = EveryThingUtil::Search(search_arg);
+    this->ui->tableView->setFileInfo(fileInfos);
+
     QStandardItem *aItem_0, *aItem_1, *aItem_2, *aItem_3, *aItem_4;
     QFileIconProvider provider;
     QIcon icon;
@@ -103,63 +104,5 @@ void SearchWindow::on_lineEdit_textChanged(const QString &keywords)
     this->ui->tableView->setColumnWidth(4, 150);
 }
 
-void SearchWindow::slot_context_menu(QPoint pos)
-{
-    qDebug() << QString::fromLocal8Bit("弹出菜单");
-    idx = ui->tableView->indexAt(pos);
-    if (idx.isValid()) {
-        popMenu->exec(QCursor::pos());
-    }
-}
 
-void SearchWindow::slot_open_file()
-{
-    QString filePath =  model->item(idx.row(), 2)->text();
-    QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
-}
 
-void SearchWindow::slot_delete_file()
-{
-    QString filePath =  model->item(idx.row(), 2)->text();
-    QFile deleteFile(filePath);
-    QString dlgTitle = "真的要删除文件吗";
-    int pos = filePath.lastIndexOf("/");
-    QString strInfo = "是否要删除文件\"" + filePath.right(filePath.size() - pos - 1) + "\"?";
-    QMessageBox::StandardButton defaultBtn = QMessageBox::NoButton;
-    QMessageBox::StandardButton result =
-            QMessageBox::question(this, dlgTitle, strInfo, QMessageBox::Yes | QMessageBox::No, defaultBtn);
-
-    if (result == QMessageBox::Yes) {
-        qDebug() << "yes";
-        deleteFile.remove();
-        on_lineEdit_textChanged(search_arg);
-    }
-}
-
-void SearchWindow::slot_copy_file_path()
-{
-    QString filePath =  model->item(idx.row(), 2)->text();
-    QClipboard *clipboard = QGuiApplication::clipboard();
-    clipboard->setText(filePath);
-}
-
-void SearchWindow::initPopMenu()
-{
-    popMenu = new QMenu(ui->tableView);
-
-    QAction *deleteAction = new QAction(),
-            *openAction = new QAction(),
-            *copyPathAction = new QAction();
-    openAction->setText(QString("打开"));
-    deleteAction->setText(QString("删除"));
-    copyPathAction->setText(QString("复制路径"));
-
-    popMenu->addAction(openAction);
-    popMenu->addAction(deleteAction);
-    popMenu->addAction(copyPathAction);
-
-    connect(openAction, SIGNAL(triggered()), this, SLOT(slot_open_file()));
-    connect(deleteAction, SIGNAL(triggered()), this, SLOT(slot_delete_file()));
-    connect(copyPathAction, SIGNAL(triggered()), this, SLOT(slot_copy_file_path()));
-    connect(ui->tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slot_context_menu(QPoint)));
-}
