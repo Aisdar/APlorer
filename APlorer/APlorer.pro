@@ -13,7 +13,8 @@ SOURCES += \
     aplmainwindow.cpp \
     aplsingleapplication.cpp \
     bigicondelegate.cpp \
-    cfilelistview.cpp \
+#    cfilelistview.cpp \
+    contentdelegate.cpp \
     countthefilesizeofeachcategory.cpp \
     cshell.cpp \
     customstyle.cpp \
@@ -33,7 +34,7 @@ HEADERS += \
     aplmainwindow.h \
     aplsingleapplication.h \
     bigicondelegate.h \
-    cfilelistview.h \
+#    cfilelistview.h \
     contentdelegate.h \
     countthefilesizeofeachcategory.h \
     customstyle.h \

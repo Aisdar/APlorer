@@ -7,7 +7,11 @@
 #include <aplmainwindow.h>
 #include <QFileIconProvider>
 #include <QDesktopServices>
-
+#include "contentdelegate.h"
+#include "detaildelegate.h"
+#include "detaildelegate2.h"
+#include "listdelegate.h"
+#include "bigicondelegate.h"
 
 MyTableView::MyTableView(QWidget *parent) : QTableView(parent)
 {
@@ -365,6 +369,11 @@ void MyTableView::openFile(QModelIndex index)
 
 
 #include "CShell.h"
+
+myTableView::myTableView(QWidget *parent)
+{
+
+}
 
 void myTableView::setFileInfo(const QVector<QFileInfo> &fileInfos)
 {

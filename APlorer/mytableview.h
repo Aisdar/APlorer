@@ -12,7 +12,12 @@
 #include <QFileInfo>
 #include <QStack>
 
-#include "aplmainwindow.h"
+class ContentDelegate;
+class DetailDelegate;
+class DetailDelegate2;
+class ListDelegate;
+class BigIconDelegate;
+
 
 class MyTableView : public QTableView
 {

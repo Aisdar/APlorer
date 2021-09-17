@@ -83,9 +83,8 @@ void DriverWidget::paintEvent(QPaintEvent *event)
     rect2.setHeight(3*rect2.height()/2);
     font.setPixelSize(smallR>>2);
     painter.setFont(font);
-//    QString meg = "可用：" + QString::number(int(totalNumberOfFreeGb)) + "GB\n总计：" +
-//            QString::number(int(totalNumberOfGb)) + "GB\n已用：" +
-//            QString::number(int(totalNumberOfGb-totalNumberOfFreeGb)) + "GB";
-    QString meg = "";
+    QString meg = "可用：" + QString::number(int(totalNumberOfFreeGb)) + "GB\n总计：" +
+            QString::number(int(totalNumberOfGb)) + "GB\n已用：" +
+            QString::number(int(totalNumberOfGb-totalNumberOfFreeGb)) + "GB";
     painter.drawText(rect2, Qt::AlignCenter, meg);
 }
