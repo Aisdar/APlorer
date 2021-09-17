@@ -21,6 +21,7 @@ public:
     explicit DriverWidget(QWidget *parent = nullptr);
     DriverWidget(QString driverName, QWidget *parent = nullptr);
     void setDrive(QString driverName); // 设置驱动器的名称
+    QString getDriveName() {return driverName;};
     static int bigR, circleWidth;
     int smallR; // 外圆环半径，圆环宽度
 signals:

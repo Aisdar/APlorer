@@ -67,19 +67,11 @@ void DriverWidget::paintEvent(QPaintEvent *event)
     // qDebug() << "startAngle: " << startAngle << "   spanAngle:" << spanAngle; // 打印角度
     QRect rect1(center.x()-bigR+(circleWidth>>1), center.y()-bigR+(circleWidth>>1), (bigR<<1)-circleWidth, (bigR<<1)-circleWidth);
     painter.drawArc(rect1, (int)startAngle * 16, (int)spanAngle * 16);
-//    pen.setColor(Qt::black);
-//    pen.setWidth(1);
-//    painter.setPen(pen);
-//    painter.drawRect(rect1);
     // 画中间的内容提示条
     QPoint point(center.x()-bigR, center.y()-int((bigR>>1)*1.2));
     QRect rect2(point.x(), point.y()-2, bigR<<1, bigR>>1);
     pen.setColor(Qt::black);
     painter.setPen(pen);
-//    pen.setColor(Qt::black);
-//    pen.setWidth(1);
-//    painter.setPen(pen);
-//    painter.drawRect(rect2);
     // 写中间的盘名
     QFont font("宋体");
     font.setPixelSize(int(rect2.height()*0.8));

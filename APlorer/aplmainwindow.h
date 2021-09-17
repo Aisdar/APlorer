@@ -3,9 +3,16 @@
 
 #include "tabbar.h"
 #include "SearchWindow.h"
+#include "detaildelegate.h"
+#include "detaildelegate2.h"
+#include "bigicondelegate.h"
+#include "contentdelegate.h"
+#include "listdelegate.h"
+#include <mytableview.h>
 
 #include <QMainWindow>
 #include <QMenu>
+#include <QDir>
 
 
 QT_BEGIN_NAMESPACE
@@ -23,6 +30,7 @@ class aplMainWindow : public QMainWindow
 public:
     aplMainWindow(QWidget *parent = nullptr);
     ~aplMainWindow();
+
     void init();
     QFileSystemModel* fileModel();
     void copy(aplMainWindow* oldApl);
@@ -36,19 +44,14 @@ private slots:
 
 private:
     Ui::aplMainWindow *ui;
-
     QFileSystemModel *m_model;
     TabBar *bar;
     SearchWindow* searchWindow;
+
     void initToolBar(); // 初始化工具栏
-    void initFileBrowser(QWidget *& pathPage); // 初始化浏览窗口
-    void setToolButtonActions(); // 设置按钮对应Action
+
     void setMenus(); // 设置菜单
-    void initHomeTab(QWidget *& homePage); // 初始化主页菜单
-
-protected:
-
-
-
+public:
+    void setToolButtonActions(QAction *forward, QAction *backward); // 设置按钮对应Action
 };
 #endif // APLMAINWINDOW_H

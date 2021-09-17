@@ -130,9 +130,6 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="childrenCollapsible">
-          <bool>false</bool>
-         </property>
          <widget class="QTreeView" name="directoryTree">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -148,30 +145,28 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>300</width>
-            <height>800</height>
+            <width>16777215</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="acceptDrops">
            <bool>false</bool>
           </property>
          </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="MyTabWidget" name="brower">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>915</width>
-           <height>570</height>
-          </size>
-         </property>
+         <widget class="MyTabWidget" name="brower">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>915</width>
+            <height>570</height>
+           </size>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>

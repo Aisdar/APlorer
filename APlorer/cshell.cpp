@@ -5,10 +5,12 @@
 #include <assert/advanced_assert.h>
 
 #ifdef _WIN32
+#include <initguid.h>
 #include <Shobjidl.h>
 #include <ShlObj.h>
 #include <windowsx.h>
 #include <Windows.h>
+
 
 // [!]
 #pragma comment(lib, "user32.lib")

@@ -12,13 +12,19 @@ SOURCES += \
     SearchWindow.cpp \
     aplmainwindow.cpp \
     aplsingleapplication.cpp \
+    bigicondelegate.cpp \
     cfilelistview.cpp \
+    contentdelegate.cpp \
     countthefilesizeofeachcategory.cpp \
     cshell.cpp \
     customstyle.cpp \
+    detaildelegate.cpp \
+    detaildelegate2.cpp \
     driverwidget.cpp \
     everythingutil.cpp \
+    listdelegate.cpp \
     main.cpp \
+    mytableview.cpp \
     mytabwidget.cpp \
     tabbar.cpp
 
@@ -27,11 +33,17 @@ HEADERS += \
     SearchWindow.h \
     aplmainwindow.h \
     aplsingleapplication.h \
+    bigicondelegate.h \
     cfilelistview.h \
+    contentdelegate.h \
     countthefilesizeofeachcategory.h \
     customstyle.h \
+    detaildelegate.h \
+    detaildelegate2.h \
     driverwidget.h \
     everythingutil.h \
+    listdelegate.h \
+    mytableview.h \
     mytabwidget.h \
     tabbar.h
 
@@ -63,6 +75,8 @@ LIBS += -L$$PWD/lib -lEverything64
 
 DISTFILES += \
     assert/assert.pri
+
+win32: LIBS += -lOle32
 
 
 include (assert/assert.pri)

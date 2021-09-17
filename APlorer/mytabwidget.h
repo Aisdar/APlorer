@@ -21,9 +21,16 @@ public:
 private:
     Ui::MyTabWidget *ui;
     TabBar *bar;
-    QStackedLayout *sLayout;
+
+
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+
 public:
-    // void initHomePage(QWidget *homePageWidget);
+    void initHomeTab(QWidget *&homePageWidget);
+    void initPageTab(QString path, QWidget *&page);
+public slots:
+    void backward();
+    void forward();
 };
 
 
