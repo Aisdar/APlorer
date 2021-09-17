@@ -1,4 +1,4 @@
-#include "driverwidget.h"
+﻿#include "driverwidget.h"
 /**
   driveWidget使用驱动盘名字初始化后可以自动绘制
 **/
@@ -83,8 +83,9 @@ void DriverWidget::paintEvent(QPaintEvent *event)
     rect2.setHeight(3*rect2.height()/2);
     font.setPixelSize(smallR>>2);
     painter.setFont(font);
-    QString meg = "可用：" + QString::number(int(totalNumberOfFreeGb)) + "GB\n总计：" +
-            QString::number(int(totalNumberOfGb)) + "GB\n已用：" +
-            QString::number(int(totalNumberOfGb-totalNumberOfFreeGb)) + "GB";
+//    QString meg = "可用：" + QString::number(int(totalNumberOfFreeGb)) + "GB\n总计：" +
+//            QString::number(int(totalNumberOfGb)) + "GB\n已用：" +
+//            QString::number(int(totalNumberOfGb-totalNumberOfFreeGb)) + "GB";
+    QString meg = "";
     painter.drawText(rect2, Qt::AlignCenter, meg);
 }

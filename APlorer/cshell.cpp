@@ -1,10 +1,11 @@
-﻿
-
-#include "cshell.h"
+﻿#include "CShell.h"
 #include <QDebug>
 #include <assert/advanced_assert.h>
 
+<<<<<<< HEAD
 #ifdef _WIN32
+=======
+>>>>>>> 11211436808d976b99da47c5654be94dca8d7116
 #include <initguid.h>
 #include <Shobjidl.h>
 #include <ShlObj.h>
@@ -52,8 +53,6 @@ bool prepareContextMenuForObjects(std::vector<std::wstring> objects, void * pare
     std::vector<ITEMIDLIST*> ids;
     std::vector<LPCITEMIDLIST> relativeIds;
     IShellFolder * ifolder = 0;
-    QString qstr = QString::fromLocal8Bit("F:/TIM下载/tiny210_Ubuntu1204.rar");
-    objects[0] = qstr.toStdWString();
 
     for (size_t i = 0, nItems = objects.size(); i < nItems; ++i)
     {
@@ -120,5 +119,3 @@ bool OsShell::openShellContextMenuForObjects(const std::vector<std::wstring>& ob
 
     return true;
 }
-
-#endif

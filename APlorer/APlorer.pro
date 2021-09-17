@@ -14,7 +14,6 @@ SOURCES += \
     aplsingleapplication.cpp \
     bigicondelegate.cpp \
     cfilelistview.cpp \
-    contentdelegate.cpp \
     countthefilesizeofeachcategory.cpp \
     cshell.cpp \
     customstyle.cpp \
