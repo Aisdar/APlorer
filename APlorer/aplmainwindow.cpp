@@ -119,7 +119,6 @@ void aplMainWindow::setPreviewLabel(QString path)
 {
     QMimeDatabase db;
     QString type = db.mimeTypeForUrl(path).name();
-    qDebug() << type;
     if (type.contains("text")) {
         QFile previewfile(path);
         ui->previewLabel->setAlignment(Qt::AlignLeft);

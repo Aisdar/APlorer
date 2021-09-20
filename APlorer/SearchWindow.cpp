@@ -109,8 +109,4 @@ void SearchWindow::lineEdit_textChanged(const QString &keywords)
 
 
 
-void SearchWindow::on_tableView_clicked(const QModelIndex &index)
-{
-
-}
 
