@@ -11,6 +11,11 @@
 #include <QDesktopServices>
 #include "CShell.h"
 
+#include "contentdelegate.h"
+#include "detaildelegate.h"
+#include "detaildelegate2.h"
+#include "listdelegate.h"
+#include "bigicondelegate.h"
 
 MyTableView::MyTableView(QWidget *parent) : QTableView(parent)
 {
@@ -463,7 +468,7 @@ void MyTableView::openFile(QModelIndex index)
 
 #include "CShell.h"
 
-myTableView::myTableView(QWidget *parent):QTableView(parent)
+myTableView::myTableView(QWidget *parent): QTableView(parent)
 {
 
 }

@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QTime>
 #include "mytableview.h"
+#include "aplmainwindow.h"
 
 MyTabWidget::MyTabWidget(QWidget *parent)
     : QTabWidget(parent)

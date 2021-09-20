@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <assert/advanced_assert.h>
 
+#ifdef _WIN32
 #include <initguid.h>
 #include <Shobjidl.h>
 #include <ShlObj.h>
@@ -114,3 +115,5 @@ bool OsShell::openShellContextMenuForObjects(const std::vector<std::wstring>& ob
 
     return true;
 }
+
+#endif
