@@ -22,8 +22,6 @@ public:
 public slots:
     void lineEdit_textChanged(const QString &);
 
-private slots:
-    void on_tableView_clicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;

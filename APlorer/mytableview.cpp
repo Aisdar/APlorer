@@ -479,16 +479,24 @@ void myTableView::setFileInfo(const QVector<QFileInfo> &fileInfos)
 }
 
 void myTableView::mouseReleaseEvent(QMouseEvent* e) {
+    QModelIndex idx = this->indexAt(e->pos());
+    QPoint pos = mapToGlobal(e->pos());
     if (e->button() == Qt::RightButton) {
-        qDebug() << "在tableView中点击了右键";
-        QModelIndex idx = this->indexAt(e->pos());
-        QPoint pos = mapToGlobal(e->pos());
         if (idx.isValid()) {
             QString filePath(_fileInfos[idx.row()].path() + "/" + _fileInfos[idx.row()].fileName());
             std::vector<std::wstring> paths;
             paths.push_back(filePath.toStdWString());
             OsShell::openShellContextMenuForObjects(paths, pos.x(), pos.y(), reinterpret_cast<void*>(winId()));
         }
-        qDebug() << idx.row() << " " << idx.column();
+        // qDebug() << idx.row() << " " << idx.column();
+    } else if (e->button() == Qt::LeftButton) {
+        if (idx.isValid()){
+            QString filePath(_fileInfos[idx.row()].path() + "/" + _fileInfos[idx.row()].fileName());
+            std::vector<std::wstring> paths;
+            paths.push_back(filePath.toStdWString());
+            aplMainWindow *mainwindow = static_cast<aplMainWindow *>(this->parent());
+            // mainwindow->setPreviewLabel(QString::fromWCharArray(paths[0].data()));
+        }
     }
+    QTableView::mouseReleaseEvent(e);
 }

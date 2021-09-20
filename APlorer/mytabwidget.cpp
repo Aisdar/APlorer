@@ -171,7 +171,7 @@ void MyTabWidget::initPageTab(QString path, QWidget *&page)
 
     connect(view, &MyTableView::currentPageChanged, mainwindow, &aplMainWindow::addPathBox);
     connect(view, &MyTableView::currentPageChanged1, mainwindow, &aplMainWindow::setPathBox);
-    connect(view, &MyTableView::refreshPreview, mainwindow, &aplMainWindow::setPreviewLabel);
+    connect(view, SIGNAL(refreshPreview(QModelIndex)), mainwindow, SLOT(setPreviewLabel(QModelIndex)));
     connect(view, &MyTableView::currentPageChanged3, mainwindow, &aplMainWindow::setStatuBarString);
 }
 
@@ -185,7 +185,7 @@ void MyTabWidget::currentPageChanged(int index)
                                                                  parent()->parent()->parent());
         if (view)
         {
-            disconnect(view, &MyTableView::refreshPreview, mainwindow, &aplMainWindow::setPreviewLabel);
+            disconnect(view, SIGNAL(refreshPreview(QModelIndex)), mainwindow, SLOT(setPreviewLabel(QModelIndex)));
         }
     }
     MyTableView* view =  this->currentWidget()->findChild<MyTableView *>();

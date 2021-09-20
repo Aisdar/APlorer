@@ -32,7 +32,8 @@ aplMainWindow::aplMainWindow(QWidget *parent)
     ui->brower->addTab(homePage, QIcon(":/icon/default theme/home-.png"), "Home"); // 添加一个页面
     EveryThingUtil::openEverything();
     searchWindow = new SearchWindow;
-
+    searchWindow->setParent(this);
+    searchWindow->setHidden(true);
     connect(btn_hide, &QToolButton::clicked, this, &aplMainWindow::slt_hidePreview);
 }
 
@@ -111,10 +112,16 @@ void aplMainWindow::setRankMenu(QMenu *menu)
 void aplMainWindow::setPreviewLabel(QModelIndex index)
 {
     QString absolutePath = index.data(Qt::UserRole+1).toString();
+    setPreviewLabel(absolutePath);
+}
+
+void aplMainWindow::setPreviewLabel(QString path)
+{
     QMimeDatabase db;
-    QString type = db.mimeTypeForUrl(absolutePath).name();
+    QString type = db.mimeTypeForUrl(path).name();
+    qDebug() << type;
     if (type.contains("text")) {
-        QFile previewfile(absolutePath);
+        QFile previewfile(path);
         ui->previewLabel->setAlignment(Qt::AlignLeft);
         if (!previewfile.open(QIODevice::ReadOnly)) {
             ui->previewLabel->setText("open failed");
@@ -122,7 +129,7 @@ void aplMainWindow::setPreviewLabel(QModelIndex index)
             ui->previewLabel->setText(previewfile.readAll());
         }
     } else if (type.contains("image")) {
-        QPixmap pixmap(absolutePath);
+        QPixmap pixmap(path);
         ui->previewLabel->setAlignment(Qt::AlignCenter);
         ui->previewLabel->setPixmap(pixmap.scaled(ui->previewLabel->size(),
                                               Qt::KeepAspectRatio,
@@ -234,7 +241,8 @@ void aplMainWindow::on_actionhome_triggered()
 void aplMainWindow::on_actionSearch_triggered()
 {
     QRect rect = ui->brower->rect();
-    rect.setTopLeft(ui->brower->mapToGlobal(QPoint(0, 0)));
+    QPoint p = ui->brower->mapToGlobal(QPoint(-9, -9));
+    rect.setTopLeft(this->mapFromGlobal(p));
     rect.setHeight(ui->brower->height());
     rect.setWidth(ui->brower->width());
     searchWindow->setGeometry(rect);
@@ -282,7 +290,7 @@ void aplMainWindow::slt_hidePreview()
     } else {
         ui->previewLabel->setHidden(true);
     }
-    resize(this->width()+1, this->height()+1);
+    resize(this->width(), this->height());
 }
 
 

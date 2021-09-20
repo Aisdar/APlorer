@@ -75,6 +75,7 @@ public slots:
     void addPathBox(QString path); // 添加路径框
     void setRankMenu(QMenu *menu); // 设置排序菜单
     void setPreviewLabel(QModelIndex index); // 设置预览窗
+    void setPreviewLabel(QString path); // 设置预览窗重载
     void setStatuBarString(QString text); // 设置状态栏文字
     void setSearchContent(QString text); // 设置搜索文字
 };
