@@ -19,6 +19,7 @@ SearchWindow::SearchWindow(QWidget *parent)
     ui->setupUi(this);
     this->setWindowTitle("Aplorer搜索");
     this->setWindowIcon(QIcon(":/Search.svg"));
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     this->model = new QStandardItemModel;
     this->proxyModel = new QSortFilterProxyModel(this);
@@ -33,7 +34,7 @@ SearchWindow::SearchWindow(QWidget *parent)
     this->ui->tableView->setSortingEnabled(true);
 
 
-    on_lineEdit_textChanged("");
+    lineEdit_textChanged("");
 }
 
 SearchWindow::~SearchWindow()
@@ -64,7 +65,7 @@ QString getFileSize(const QFileInfo& fileInfo) {
     return res;
 }
 
-void SearchWindow::on_lineEdit_textChanged(const QString &keywords)
+void SearchWindow::lineEdit_textChanged(const QString &keywords)
 {
     search_arg = keywords;
     model->clear();
@@ -105,4 +106,11 @@ void SearchWindow::on_lineEdit_textChanged(const QString &keywords)
 }
 
 
+
+
+
+void SearchWindow::on_tableView_clicked(const QModelIndex &index)
+{
+
+}
 

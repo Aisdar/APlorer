@@ -17,10 +17,13 @@ class SearchWindow : public QMainWindow
 
 public:
     SearchWindow(QWidget *parent = nullptr);
-    ~SearchWindow();
+    ~SearchWindow() override;
+
+public slots:
+    void lineEdit_textChanged(const QString &);
 
 private slots:
-    void on_lineEdit_textChanged(const QString &);
+    void on_tableView_clicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;
@@ -30,6 +33,9 @@ private:
     QModelIndex idx;
     QString search_arg;
     QVector<QFileInfo> fileInfos;
+
 };
 
+
+QString getFileSize(const QFileInfo& fileInfo);
 #endif // SEARCHWINDOW_H

@@ -34,5 +34,8 @@ int main(int argc, char *argv[])
     translator.load(":/qt_zh_CN.qm");
     a.installTranslator(&translator);
 
+    qApp->setStyleSheet("QTableView::item:hover{ \
+                        }");
+
     return a.exec();
 }

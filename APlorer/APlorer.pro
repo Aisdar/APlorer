@@ -13,7 +13,7 @@ SOURCES += \
     aplmainwindow.cpp \
     aplsingleapplication.cpp \
     bigicondelegate.cpp \
-    cfilelistview.cpp \
+    contentdelegate.cpp \
     countthefilesizeofeachcategory.cpp \
     cshell.cpp \
     customstyle.cpp \
@@ -25,7 +25,7 @@ SOURCES += \
     main.cpp \
     mytableview.cpp \
     mytabwidget.cpp \
-    tabbar.cpp
+    tabbar.cpp \
 
 HEADERS += \
     CShell.h \
@@ -33,7 +33,6 @@ HEADERS += \
     aplmainwindow.h \
     aplsingleapplication.h \
     bigicondelegate.h \
-    cfilelistview.h \
     contentdelegate.h \
     countthefilesizeofeachcategory.h \
     customstyle.h \
@@ -44,11 +43,11 @@ HEADERS += \
     listdelegate.h \
     mytableview.h \
     mytabwidget.h \
-    tabbar.h
+    tabbar.h \
 
 FORMS += \
     SearchWindow.ui \
-    aplmainwindow.ui
+    aplmainwindow.ui \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

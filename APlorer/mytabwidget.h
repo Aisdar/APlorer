@@ -24,13 +24,14 @@ private:
 
 
     void mouseDoubleClickEvent(QMouseEvent *event) override;
-
+    void resizeEvent(QResizeEvent *event) override;
 public:
     void initHomeTab(QWidget *&homePageWidget);
     void initPageTab(QString path, QWidget *&page);
+
+
 public slots:
-    void backward();
-    void forward();
+    void currentPageChanged(int index);
 };
 
 

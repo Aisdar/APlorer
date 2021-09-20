@@ -1,6 +1,7 @@
 #include "bigicondelegate.h"
 #include <QTextEdit>
 #include <QFileInfo>
+#include <QMimeDatabase>
 #include <QLineEdit>
 #include <QFileIconProvider>
 #include <QPainter>
@@ -122,8 +123,36 @@ void BigIconDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
     QString absolutePath = index.data(Qt::UserRole+1).value<QString>(); // 获取在索引中的文件绝对路径
     if (absolutePath.isEmpty())
         return;
+
+    // 选中状态绘制
+    QPainterPath path;
+    path.moveTo(rect.topRight());
+    path.lineTo(rect.topLeft());
+    path.quadTo(rect.topLeft(), rect.topLeft());
+    path.lineTo(rect.bottomLeft());
+    path.quadTo(rect.bottomLeft(), rect.bottomLeft());
+    path.lineTo(rect.bottomRight());
+    path.quadTo(rect.bottomRight(), rect.bottomRight());
+    path.lineTo(rect.topRight());
+    path.quadTo(rect.topRight(), rect.topRight());
+
+    // 鼠标悬停或者选中时改变背景色
+    painter->save();
+    if (option.state.testFlag(QStyle::State_MouseOver)) {
+        painter->setPen(QPen(QColor("#e3e3e5")));
+        painter->setBrush(QColor("#e3e3e5"));
+        painter->drawPath(path);
+    }
+    if (option.state.testFlag(QStyle::State_Selected)) {
+        painter->setPen(QPen(QColor("#e3e3e5")));
+        painter->setBrush(QColor("#e3e3e5"));
+        painter->drawPath(path);
+    }
+    painter->restore();
+
+
     QFileInfo info(absolutePath); // 获得对应路径下的文件信息
-    int adjustWidth, adjustHeight1, adjustHeight2;
+    int adjustWidth, adjustHeight1;
     QFontMetrics metrics(info.fileName());
     QSize iconSize;
     int lines;
@@ -144,16 +173,28 @@ void BigIconDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
         adjustHeight1 = 3;
         break;
     }
-
-    QPixmap pixmap = getIcon(absolutePath, size).pixmap(iconSize);
+    QMimeDatabase db;
+    QString mimeType = db.mimeTypeForUrl(absolutePath).name();
+    QPixmap pixmap;
     adjustWidth = (rectSize.width()-iconSize.width()) / 2;
-    adjustHeight2 = rectSize.height() - iconSize.height() - adjustHeight1;
     QRect targetRect = rect.adjusted(+adjustWidth, 0, -adjustWidth, 0);
-    targetRect.setHeight(iconSize.height());
-    targetRect = targetRect.adjusted(0, +adjustHeight1, 0, +adjustHeight1);
-    painter->drawPixmap(targetRect, pixmap);
+    if (mimeType.contains("image")) {
+        pixmap.load(absolutePath);
+        if (pixmap.isNull())
+            pixmap = getIcon(absolutePath, size).pixmap(iconSize);
+        pixmap = pixmap.scaled(iconSize, Qt::AspectRatioMode::KeepAspectRatio, Qt::SmoothTransformation);
+        targetRect.setSize(pixmap.size());
+        targetRect = targetRect.adjusted(0, +adjustHeight1, 0, +adjustHeight1);
+        painter->drawPixmap(targetRect, pixmap);
+    } else
+    {
+        pixmap = getIcon(absolutePath, size).pixmap(iconSize);
+        targetRect.setHeight(iconSize.height());
+        targetRect = targetRect.adjusted(0, +adjustHeight1, 0, +adjustHeight1);
+        painter->drawPixmap(targetRect, pixmap);
+    }
 
-    painter->drawText(rect.adjusted(+0, +iconSize.height(), 0, 0),
+    painter->drawText(rect.adjusted(+0, +iconSize.height()+adjustHeight1, 0, 0),
                       Qt::AlignHCenter| Qt::AlignTop, stringFomat(info.fileName(), size)); // 画出文件名的文字
 }
 

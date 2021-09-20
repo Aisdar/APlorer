@@ -18,19 +18,26 @@ MyTabWidget::MyTabWidget(QWidget *parent)
     bar->setTabsClosable(true);
     this->setTabBar(bar);
     bar->setElideMode(Qt::TextElideMode::ElideMiddle);
+    this->setTabsClosable(false);
 
     // 关联加号和添加页面的槽函数
     connect(bar, &TabBar::plusClicked, this, [=]() {
-        addTab(new QWidget, "C:");
+        QWidget *w = new QWidget;
+        initHomeTab(w);
+        int index = addTab(w, "Home");
+        setCurrentIndex(index);
         if (tabsClosable() == false)
             setTabsClosable(true);
     });
+
     // 关联关闭页面和对应槽函数
     connect(this, &MyTabWidget::tabCloseRequested, this, [=](int index) {
         removeTab(index);
         if (count() == 1)
             setTabsClosable(false);
     });
+    connect(this, &MyTabWidget::currentChanged, this, &MyTabWidget::currentPageChanged);
+
     // 设置加号在标签右侧
     bar->setPlusOnTabRight(true);
     // 设置风格
@@ -47,10 +54,23 @@ void MyTabWidget::mouseDoubleClickEvent(QMouseEvent *event)
     if (QString(this->childAt(event->pos())->metaObject()->className()) == "DriverWidget") {
         DriverWidget *driver = static_cast<DriverWidget*>(this->childAt(event->pos()));
         QString driverPath =  driver->getDriveName();
-        QWidget *page = this->currentWidget();
+        QWidget *page = new QWidget;
         initPageTab(driverPath, page);
-        this->addTab(page, driverPath);
+        int index = this->currentIndex();
+        this->removeTab(index);
+        this->insertTab(index, page, driverPath);
+        this->setCurrentIndex(index);
+        this->resize(this->width(), this->height());
     }
+}
+
+void MyTabWidget::resizeEvent(QResizeEvent *event)
+{
+    QTabWidget::resizeEvent(event);
+    MyTableView *view = this->currentWidget()->findChild<MyTableView *>();
+    if (view) {
+        view->setCurrentPage(view->getDir(), view->getCurrentMode(), true);
+    }  
 }
 
 void MyTabWidget::initHomeTab(QWidget *&homePageWidget)
@@ -100,6 +120,8 @@ void MyTabWidget::initHomeTab(QWidget *&homePageWidget)
     QPushButton *btn_image = new QPushButton(QIcon(":/icon/default theme/photo.png"), "图片");
     QPushButton *btn_collect = new QPushButton(QIcon(":/icon/default theme/folder-info-fill.png"), "收藏");
     QPushButton *btn_zip = new QPushButton(QIcon(":/icon/default theme/folder-zip-fill.png"), "压缩文件");
+
+
     classifyLayout->setHorizontalSpacing(20);
     classifyLayout->addWidget(btn_music, 0, 0);classifyLayout->addWidget(btn_video, 0, 1);
     classifyLayout->addWidget(btn_document, 0, 2);classifyLayout->addWidget(btn_image, 0, 3);
@@ -109,31 +131,71 @@ void MyTabWidget::initHomeTab(QWidget *&homePageWidget)
     vLayout->addWidget(scrollArea2);
     // 主页设置垂直布局
     homePageWidget->setLayout(vLayout);
+    aplMainWindow *mainwindow = static_cast<aplMainWindow *>(this->parentWidget()->
+                                                             parent()->parent()->parent());
+
+    connect(btn_music, &QPushButton::clicked, [=]() {
+       mainwindow->setSearchContent("*.mp3");
+    });
+    connect(btn_image, &QPushButton::clicked, [=]() {
+        mainwindow->setSearchContent("*.jpg|*.png|*.jpeg|*.gif");
+    });
+    connect(btn_document, &QPushButton::clicked, [=]() {
+        mainwindow->setSearchContent("*.doc|*.docx|*.pdf|*.pptx|*.xlsx|*.txt");
+    });
+    connect(btn_video, &QPushButton::clicked, [=]() {
+        mainwindow->setSearchContent("*.mp4|*.3gp|*.rmvb");
+    });
+    connect(btn_zip, &QPushButton::clicked, [=] {
+        mainwindow->setSearchContent("*.7z|*.zip|*.rar|*.gz|*.bz2");
+    });
 }
 
 void MyTabWidget::initPageTab(QString path, QWidget *&page)
 {
     delete page;
     page = new QWidget(this);
-
+    page->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout *vLayout = new QVBoxLayout();
-    qDebug() << 1;
-    MyTableView *view = new MyTableView(path, MyTableView::DETAIL, page);
+    MyTableView *view = new MyTableView(path, MyTableView::BIGICON, page);
     aplMainWindow *mainwindow = static_cast<aplMainWindow *>(this->parentWidget()->
                                                              parent()->parent()->parent());
+
     mainwindow->setToolButtonActions(view->forward, view->backward);
+    mainwindow->setLayoutMenu(view->layoutMenu);
+    mainwindow->setHistoryMenu(view->historyMenu);
+    mainwindow->addPathBox(path);
     vLayout->addWidget(view);
     page->setLayout(vLayout);
+
+    connect(view, &MyTableView::currentPageChanged, mainwindow, &aplMainWindow::addPathBox);
+    connect(view, &MyTableView::currentPageChanged1, mainwindow, &aplMainWindow::setPathBox);
+    connect(view, &MyTableView::refreshPreview, mainwindow, &aplMainWindow::setPreviewLabel);
+    connect(view, &MyTableView::currentPageChanged3, mainwindow, &aplMainWindow::setStatuBarString);
 }
 
-void MyTabWidget::backward()
-{
-    qDebug() << this->currentWidget()->children();
-}
 
-void MyTabWidget::forward()
+void MyTabWidget::currentPageChanged(int index)
 {
-
+    static int preIndex = index;
+    if (index != preIndex) {
+        MyTableView* view = this->widget(preIndex)->findChild<MyTableView *>();
+        aplMainWindow *mainwindow = static_cast<aplMainWindow *>(this->parentWidget()->
+                                                                 parent()->parent()->parent());
+        if (view)
+        {
+            disconnect(view, &MyTableView::refreshPreview, mainwindow, &aplMainWindow::setPreviewLabel);
+        }
+    }
+    MyTableView* view =  this->currentWidget()->findChild<MyTableView *>();
+    if (view)
+    {
+        aplMainWindow *mainwindow = static_cast<aplMainWindow *>(this->parentWidget()->
+                                                                 parent()->parent()->parent());
+        mainwindow->setToolButtonActions(view->forward, view->backward);
+        mainwindow->setLayoutMenu(view->layoutMenu);
+        mainwindow->setHistoryMenu(view->historyMenu);
+    }
 }
 
 

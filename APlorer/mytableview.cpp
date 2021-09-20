@@ -1,5 +1,7 @@
 #include "mytableview.h"
 #include <QDebug>
+#include <QMimeDatabase>
+#include <QClipboard>
 #include <QDateTime>
 #include <QLineEdit>
 #include <QHeaderView>
@@ -7,6 +9,7 @@
 #include <aplmainwindow.h>
 #include <QFileIconProvider>
 #include <QDesktopServices>
+#include "CShell.h"
 
 
 MyTableView::MyTableView(QWidget *parent) : QTableView(parent)
@@ -18,12 +21,16 @@ MyTableView::MyTableView(QWidget *parent) : QTableView(parent)
     QHeaderView* hHeaderView = this->horizontalHeader();
     hHeaderView->setMinimumSectionSize(50); // 最小的表头宽度
     hHeaderView->setSectionsMovable(true);
+
+
 }
+
 
 MyTableView::MyTableView(QString absolutePath, DisplayMode mode, QWidget *parent):
     QTableView(parent)
 {
     historyIndex  = -1;
+    isLeft = false;
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->setMinimumSize(QSize(782, 490));
@@ -35,7 +42,7 @@ MyTableView::MyTableView(QString absolutePath, DisplayMode mode, QWidget *parent
     vHeadView->setHidden(true);
     // 文件信息显示的model
     model = new QStandardItemModel(this);
-
+    mySelectionModel = new QItemSelectionModel(model);
     // 创建代理
     detailDelegate = new DetailDelegate(this);
     detailDelegate2 = new DetailDelegate2(this);
@@ -46,10 +53,35 @@ MyTableView::MyTableView(QString absolutePath, DisplayMode mode, QWidget *parent
     contentDelegate = new ContentDelegate(this);
 
     this->setModel(model);
-    setCurrentPage(absolutePath, mode, true);
+    this->setSelectionModel(mySelectionModel);
 
     forward =  new QAction(QIcon(":/icon/default theme/forward-.png"), "前进");
     backward = new QAction(QIcon(":/icon/default theme/back-arrow-.png"), "后退");
+
+    // 历史记录菜单
+    historyMenu = new QMenu;
+
+    // 布局的菜单
+    layoutMenu = new QMenu;
+    QList <QAction *> acts_layout = {
+        new QAction(QIcon(":/icon/default theme/ratio--_2.png"), "超大图标"),
+        new QAction(QIcon(":/icon/default theme/grid-.png"), "大图标"),
+        new QAction(QIcon(":/icon/default theme/grid-_1.png"), "中图标"),
+        new QAction(QIcon(":/icon/default theme/layout-.png"), "详情"),
+        new QAction(QIcon(":/icon/default theme/layout-_4.png"), "内容"),
+        new QAction(QIcon(":/icon/default theme/layout-_1.png"), "列表"),
+    };
+    layoutMenu->addActions(acts_layout);
+    // 排序菜单
+    this->setSortingEnabled(true);
+
+
+    // 初始化页面
+    setCurrentPage(absolutePath, mode, true);
+    // 所有连接信号
+    foreach (auto action, acts_layout) {
+        connect(action, &QAction::triggered, this, &MyTableView::slt_layoutChanged);
+    }
     connect(forward, &QAction::triggered, this, &MyTableView::slt_forward);
     connect(backward, &QAction::triggered, this, &MyTableView::slt_backward);
 }
@@ -59,16 +91,33 @@ void MyTableView::mousePressEvent(QMouseEvent *event)
     if (openedEdior != nullptr) {
         closePersistentEditor(*openedEdior);
     }
-    static QTime lastTime = QTime::currentTime();
-    static bool isLeft = false;
-    static QModelIndex lastIndex = this->indexAt(event->pos());
     if (event->button() == Qt::LeftButton)
     {
+        // 左键
+        static QModelIndex lastIndex = this->indexAt(event->pos());
+        static QTime lastTime = QTime::currentTime();
+
+        // 选中项目预览
+        mySelectionModel->select(this->indexAt(event->pos()), QItemSelectionModel::ClearAndSelect);
+        QModelIndexList indexList = this->selectedIndexes();
+        if (indexList.count() == 1) {
+            QModelIndex singleIndex = indexList.at(0);
+            QMimeDatabase db;
+            QString url = singleIndex.data(Qt::UserRole+1).toString();
+            QMimeType type = db.mimeTypeForUrl(url);
+            if (type.name().contains("image") | type.name().contains("text")) {
+                emit refreshPreview(singleIndex);
+            }
+        }
+
+        // 上一次不是左键
         if (!isLeft) {
             isLeft = true;
+            lastIndex = this->indexAt(event->pos());
+            lastTime = QTime::currentTime();
         } else {
-            QTime currentTime = QTime::currentTime();   
-            if (lastTime.msecsTo(currentTime) < 500) {
+            QTime currentTime = QTime::currentTime();
+            if (lastTime.msecsTo(currentTime) < 1000) {
                 // 两次点击事件不超过1s，打开文件
                 QModelIndex index = this->indexAt(event->pos());
                 if (index == lastIndex) {
@@ -78,7 +127,7 @@ void MyTableView::mousePressEvent(QMouseEvent *event)
             } else {
                 // 否则修改文件名
                 QModelIndex index = this->indexAt(event->pos());
-                if (index == lastIndex) {
+                if (index == lastIndex && ! index.data(Qt::UserRole+1).toString().isEmpty()) {
                     // 两次点击同一个名称
                     if (currentMode == MyTableView::DETAIL && index.column() == 0)
                         openPersistentEditor(index);
@@ -92,14 +141,29 @@ void MyTableView::mousePressEvent(QMouseEvent *event)
         }
     } else if (event->button() == Qt::RightButton) {
         isLeft = false;
-        QMenu *menu = new QMenu(this);
-        menu->addAction(QString("111"));
         QPoint pos = event->globalPos();
-        menu->exec(pos);
+        QModelIndex index = this->indexAt(event->pos());
+        mySelectionModel->select(index, QItemSelectionModel::ClearAndSelect);
+        if (index.column() == -1 && index.row() == -1) {
+            std::vector<std::wstring> paths;
+            QString path1 =  dir.path();
+            paths.push_back(path1.toStdWString());
+
+            OsShell::openShellContextMenuForObjects(paths, pos.x(), pos.y(), reinterpret_cast<void*>(winId()));
+        } else {
+            std::vector<std::wstring> paths;
+            QString path1 = index.data(Qt::UserRole+1).toString();
+            paths.push_back(path1.toStdWString());
+
+            OsShell::openShellContextMenuForObjects(paths, pos.x(), pos.y(), reinterpret_cast<void*>(winId()));
+        }
     } else {
         isLeft = false;
     }
+    // QAbstractItemView::mousePressEvent(event);
 }
+
+
 
 QString MyTableView::fileType(QFileInfo info)
 {
@@ -134,28 +198,47 @@ QString MyTableView::sizeFormat(QFileInfo info)
 
 void MyTableView::setCurrentPage(QString path, DisplayMode displayMode, bool isNew)
 {
+    isLeft = false;
     // 改变当前路径
     if (path != dir.path() && isNew) {
         history.insert(++historyIndex, path);
         dir.setPath(path);
+        QAction *newPath;
+        if (!dir.dirName().isEmpty())
+        {
+            newPath = new QAction(dir.dirName());
+            emit currentPageChanged(dir.path());
+        }
+        else{
+            newPath = new QAction(path);
+            emit currentPageChanged(path);
+        }
+        newPath->setData(dir.path());
+        historyMenu->addAction(newPath);
+        connect(newPath, &QAction::triggered, this, &MyTableView::slt_setHistoryPath);
+
     } else if (path != dir.path() && !isNew) {
         dir.setPath(path);
+        emit currentPageChanged1(dir.path());
     }
-    if (currentMode != displayMode) {
+    if (currentMode != displayMode || isNew) {
         currentMode = displayMode;
         QHeaderView* hHeaderView =  this->horizontalHeader();
         switch (currentMode) {
         case DETAIL:
             // 名称显示部分使用代理
             this->setItemDelegateForColumn(0, detailDelegate);
+            setDetailModel();
             // 其他部分也使用代理，做到无法选择的效果
             for (int i = 1; i < 4; ++i)
                 this->setItemDelegateForColumn(i, detailDelegate2);
+            hHeaderView->setHidden(false);
             break;
         case LIST:
             for (int i = 0; i < 4; ++i)
                 this->setItemDelegateForColumn(i, listDelegate);
             this->setItemDelegate(listDelegate);
+            setListModel();
             // 隐藏水平表头
             hHeaderView->setHidden(true);
             break;
@@ -199,6 +282,8 @@ void MyTableView::setCurrentPage(QString path, DisplayMode displayMode, bool isN
         setContentModel();
         break;
     }
+    status = QString::number(dir.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count()) + "项";
+    emit currentPageChanged3(status);
     // 设置tableView的合适宽度,这个大小依赖于代理中的SizeHint
     this->resizeColumnsToContents();
     this->resizeRowsToContents();
@@ -207,25 +292,47 @@ void MyTableView::setCurrentPage(QString path, DisplayMode displayMode, bool isN
 
 void MyTableView::slt_backward()
 {
-    qDebug() << history;
     if (historyIndex == 0) {
         return;
     } else {
         QString backPath = history.at(--historyIndex);
-        qDebug() << backPath;
         setCurrentPage(backPath, currentMode, false);
     }
 }
 
 void MyTableView::slt_forward()
 {
-    qDebug() << history;
-    qDebug() << historyIndex;
     if (history.length() > historyIndex+1) {
         QString forwardPath = history.at(++historyIndex);
-        qDebug() << forwardPath;
         setCurrentPage(forwardPath, currentMode, false);
     }
+}
+
+void MyTableView::slt_layoutChanged()
+{
+    QAction *action = static_cast<QAction *>(sender());
+    QString text = action->text();
+    if (text == "超大图标")
+        setCurrentPage(dir.path(), EXBIGICION, true);
+    else if (text == "大图标")
+        setCurrentPage(dir.path(), BIGICON, true);
+    else if (text == "中图标")
+        setCurrentPage(dir.path(), MIDICON, true);
+    else if (text == "内容")
+        setCurrentPage(dir.path(), CONTENT, true);
+    else if (text == "列表")
+        setCurrentPage(dir.path(), LIST, true);
+    else if (text == "详情")
+        setCurrentPage(dir.path(), DETAIL, true);
+    setCurrentPage(dir.path(), currentMode, false);
+}
+
+void MyTableView::slt_setHistoryPath()
+{
+    QAction* historyPath = static_cast<QAction *>(sender());
+    QString absolutePath = historyPath->data().toString();
+    setCurrentPage(absolutePath, currentMode, false);
+    historyIndex = history.indexOf(absolutePath);
 }
 
 void MyTableView::setDetailModel()
@@ -237,7 +344,6 @@ void MyTableView::setDetailModel()
     model->setHeaderData(2, Qt::Horizontal, "类型");
     model->setHeaderData(3, Qt::Horizontal, "大小");
 
-    // qDebug() << "currentPath:" << dir.currentPath() << " Path:" << dir.path();
     for (auto x: dir.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries)) {
         // 过滤选择不要上一级和本级目录
         QStandardItem* item = new QStandardItem; // 第一列需要较为复杂的item
@@ -258,7 +364,6 @@ void MyTableView::setListModel()
     int row = 0;
     for (auto x: dir.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries)) {
         // 过滤选择不要上一级和本级目录
-        // qDebug() << x;
         QStandardItem* item = new QStandardItem; // 第一列需要较为复杂的item
         item->setData(x.fileName(), Qt::DisplayRole); // 文件名
         item->setData(x.absoluteFilePath(), Qt::UserRole+1); // 文件绝对路径名
@@ -311,16 +416,8 @@ void MyTableView::setContentModel()
     }
 }
 
-void MyTableView::resizeEvent(QResizeEvent *event)
-{
-    if (currentMode != DETAIL) {
-        this->setCurrentPage(dir.absolutePath(), currentMode, false);
-    }
-}
-
 void MyTableView::openFile(QModelIndex index)
 {
-    qDebug() << 1;
     if (index.isValid()) {
         QString absolutePath;
         QFileInfo info;
@@ -365,6 +462,11 @@ void MyTableView::openFile(QModelIndex index)
 
 
 #include "CShell.h"
+
+myTableView::myTableView(QWidget *parent):QTableView(parent)
+{
+
+}
 
 void myTableView::setFileInfo(const QVector<QFileInfo> &fileInfos)
 {

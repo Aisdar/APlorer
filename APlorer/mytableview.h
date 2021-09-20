@@ -10,7 +10,7 @@
 #include <QMenu>
 #include <QStandardItemModel>
 #include <QFileInfo>
-#include <QStack>
+#include <QItemSelectionModel>
 
 #include "aplmainwindow.h"
 
@@ -29,23 +29,32 @@ public:
 
     MyTableView(QWidget *parent = nullptr);
     MyTableView(QString absolutePath, DisplayMode mode, QWidget *parent = nullptr);
-    void mousePressEvent(QMouseEvent *event) override;
 
+    void mousePressEvent(QMouseEvent *event) override;
     void setCurrentPage (QString absolutePath, DisplayMode mode, bool isNew);
     QString static fileType(QFileInfo info); // 获得文件类型
     QString static sizeFormat(QFileInfo info); // 获得文件大小信息
     QAction *backward;
     QAction *forward;
+    QMenu *layoutMenu;
+    QMenu *historyMenu;
+    QString status;
+
+    QString getDir() {return dir.path();}
+    DisplayMode getCurrentMode() {return currentMode;}
 
 public slots:
-        void slt_backward(); // 回退
-        void slt_forward(); // 前进
+    void slt_backward(); // 回退
+    void slt_forward(); // 前进
+    void slt_layoutChanged();// 布局改变
+    void slt_setHistoryPath(); // 设置历史路径
 
 
 private:
     QModelIndex *openedEdior = nullptr;
     DisplayMode currentMode;
     QStandardItemModel *model;
+    QItemSelectionModel *mySelectionModel;
     QDir dir;
     QVector <QString> history;
     int historyIndex;
@@ -56,6 +65,8 @@ private:
     BigIconDelegate *bigIconDelegate, *exbigIconDelegate, *midIconDelegate;
     ContentDelegate *contentDelegate;
 
+    bool isLeft;
+
     void setDetailModel(); // 设置详细信息显示模式
     void setListModel(); // 设置列表显示模式
     void setBigIconModel(); // 设置大图标显示模型
@@ -63,9 +74,14 @@ private:
 
     void openFile(QModelIndex);
 
-    void resizeEvent(QResizeEvent *event) override; // resize事件
-
+public: signals:
+    void currentPageChanged(QString);
+    void currentPageChanged1(QString);
+    void currentPageChanged3(QString);
+    void refreshPreview(QModelIndex);
 };
+
+
 
 class myTableView : public QTableView
 {
