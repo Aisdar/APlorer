@@ -84,6 +84,7 @@ public: signals:
     void currentPageChanged1(QString);
     void currentPageChanged3(QString);
     void refreshPreview(QModelIndex);
+    void backHome();
 };
 
 

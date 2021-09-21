@@ -39,8 +39,6 @@ public:
 
 private slots:
 
-    void on_actionhome_triggered(); // 主页
-
     void on_actionSearch_triggered();
 
     void on_pathBox_currentIndexChanged(const QString &arg1); // 路径改变
@@ -51,7 +49,7 @@ private slots:
 
     void on_searchBox_textChanged(const QString &arg1); // 搜索框改变
 
-    void on_aplMainWindow_destroyed();
+    void on_btn_backward_clicked();
 
 private:
     Ui::aplMainWindow *ui;
@@ -66,6 +64,8 @@ private:
     void initToolBar(); // 初始化工具栏
     void resizeEvent(QResizeEvent *e) override;
     void moveEvent(QMoveEvent *event) override;
+    void loadSettings();
+    void closeEvent(QCloseEvent *event) override;
 
 public slots:
     void setToolButtonActions(QAction *forward, QAction *backward); // 设置按钮对应Action
@@ -78,5 +78,7 @@ public slots:
     void setPreviewLabel(QString path); // 设置预览窗重载
     void setStatuBarString(QString text); // 设置状态栏文字
     void setSearchContent(QString text); // 设置搜索文字
+    void setSearchWindowHidden(bool hide); //设置搜索窗口隐藏
+    void on_actionhome_triggered(); // 主页
 };
 #endif // APLMAINWINDOW_H

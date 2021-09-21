@@ -7,6 +7,7 @@
 #include "SearchWindow.h"
 #include "everythingutil.h"
 
+#include <QSettings>
 #include <QFileSystemModel>
 #include <QDebug>
 #include <QMimeDatabase>
@@ -30,9 +31,11 @@ aplMainWindow::aplMainWindow(QWidget *parent)
     QWidget *homePage = new QWidget(ui->brower);
     ui->brower->initHomeTab(homePage); // 初始化浏览窗口的HomePage
     ui->brower->addTab(homePage, QIcon(":/icon/default theme/home-.png"), "Home"); // 添加一个页面
+
+    loadSettings();
     EveryThingUtil::openEverything();
-    searchWindow = new SearchWindow;
-    searchWindow->setParent(this);
+    searchWindow = new SearchWindow(this);
+
     searchWindow->setHidden(true);
     connect(btn_hide, &QToolButton::clicked, this, &aplMainWindow::slt_hidePreview);
 }
@@ -128,11 +131,16 @@ void aplMainWindow::setPreviewLabel(QString path)
             ui->previewLabel->setText(previewfile.readAll());
         }
     } else if (type.contains("image")) {
-        QPixmap pixmap(path);
-        ui->previewLabel->setAlignment(Qt::AlignCenter);
-        ui->previewLabel->setPixmap(pixmap.scaled(ui->previewLabel->size(),
-                                              Qt::KeepAspectRatio,
-                                              Qt::SmoothTransformation));
+        QPixmap pixmap(path);     
+        if (ui->previewLabel)
+        {
+            if (!this->searchWindow->isHidden())
+                this->searchWindow->setHidden(true);
+            ui->previewLabel->setAlignment(Qt::AlignCenter);
+            ui->previewLabel->setPixmap(pixmap.scaled(ui->previewLabel->size(),
+                                                      Qt::KeepAspectRatio,
+                                                      Qt::SmoothTransformation));
+        }
     }
 }
 
@@ -150,6 +158,11 @@ void aplMainWindow::setSearchContent(QString text)
     this->on_actionSearch_triggered();
 }
 
+void aplMainWindow::setSearchWindowHidden(bool hide)
+{
+    this->searchWindow->setHidden(hide);
+}
+
 void aplMainWindow::initToolBar()
 {
     // 初始化工具栏
@@ -161,24 +174,6 @@ void aplMainWindow::initToolBar()
     // 历史按钮
     ui->btn_backspace->setIcon(QIcon(":/icon/default theme/history.png"));
     ui->btn_backspace->setPopupMode(QToolButton::InstantPopup);
-
-    // 排序按钮和菜单
-    QMenu *rankMenu = new QMenu(this);
-    rankMenu->addAction("修改日期排序");
-    rankMenu->addAction("名称排序");
-    rankMenu->addAction("大小排序");
-    rankMenu->addSeparator();
-    rankMenu->addAction("递增");
-    rankMenu->addAction("递减");
-
-    btn_rank = new QToolButton(this);
-    btn_rank->setIcon(QIcon(":/icon/default theme/rank.png"));
-    btn_rank->setText("排序");
-    btn_rank->setPopupMode(QToolButton::InstantPopup);
-    btn_rank->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    btn_rank->setMenu(rankMenu);
-
-    ui->toolBar->insertWidget(ui->actionsetting, btn_rank);
 
     // 布局按钮和菜单
     btn_layout = new QToolButton(this);
@@ -239,8 +234,8 @@ void aplMainWindow::on_actionhome_triggered()
 
 void aplMainWindow::on_actionSearch_triggered()
 {
-    QRect rect = ui->brower->rect();
-    QPoint p = ui->brower->mapToGlobal(QPoint(-9, -9));
+    QRect rect = ui->brower->currentWidget()->rect();
+    QPoint p = ui->brower->currentWidget()->mapToGlobal(QPoint(0, 0));
     rect.setTopLeft(this->mapFromGlobal(p));
     rect.setHeight(ui->brower->height());
     rect.setWidth(ui->brower->width());
@@ -251,17 +246,21 @@ void aplMainWindow::on_actionSearch_triggered()
 void aplMainWindow::on_pathBox_currentIndexChanged(const QString &arg1)
 {
     this->searchWindow->hide();
-    MyTableView *view = static_cast<MyTableView *>(ui->brower->currentWidget()->findChild<MyTableView *>());
-    if (view) {
-        view->setCurrentPage(arg1, view->getCurrentMode(), false);
-    }
-    else {
-        int index = ui->brower->currentIndex();
-        ui->brower->removeTab(index);
-        QWidget *w = new QWidget;
-        ui->brower->initPageTab(arg1, w);
-        ui->brower->insertTab(index, w, arg1);
-        ui->brower->setCurrentIndex(index);
+    QFileInfo info(arg1);
+    if (info.isDir())
+    {
+        MyTableView *view = static_cast<MyTableView *>(ui->brower->currentWidget()->findChild<MyTableView *>());
+        if (view) {
+            view->setCurrentPage(arg1, view->getCurrentMode(), false);
+        }
+        else {
+            int index = ui->brower->currentIndex();
+            ui->brower->removeTab(index);
+            QWidget *w = new QWidget;
+            ui->brower->initPageTab(arg1, w);
+            ui->brower->insertTab(index, w, arg1);
+            ui->brower->setCurrentIndex(index);
+        }
     }
 }
 
@@ -300,8 +299,30 @@ void aplMainWindow::on_searchBox_textChanged(const QString &arg1)
 }
 
 
-void aplMainWindow::on_aplMainWindow_destroyed()
+void aplMainWindow::on_btn_backward_clicked()
 {
-    this->searchWindow->close();
+    if (!this->searchWindow->isHidden()) {
+        this->searchWindow->setHidden(true);
+    }
+}
+
+
+void aplMainWindow::loadSettings() {
+    QSettings set("APlore", "settings");
+    QRect r =  set.value("rect").toRect();
+    bool hide = set.value("preView").toBool();
+    if (!r.isEmpty())
+    {
+        this->setGeometry(r);
+        this->btn_hide->setChecked(!hide);
+    }
+}
+
+void aplMainWindow::closeEvent(QCloseEvent *event)
+{
+    Q_UNUSED(event)
+    QSettings set("APlore", "settings");
+    set.setValue("rect", this->rect());
+    set.setValue("preView", ui->previewLabel->isHidden());
 }
 

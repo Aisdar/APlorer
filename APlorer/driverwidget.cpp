@@ -13,6 +13,7 @@ DriverWidget::DriverWidget(QWidget *parent) : QWidget(parent)
 
 DriverWidget::DriverWidget(QString driverName, QWidget *parent):driverName(driverName), QWidget(parent)
 {
+    this->setObjectName("DriveWidget");
     this->setDrive(driverName);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed); // 策略Fixed
     setMinimumSize((DriverWidget::bigR<<1)+10, (DriverWidget::bigR<<1)+10); // 设置尺寸
