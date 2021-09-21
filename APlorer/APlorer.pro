@@ -25,6 +25,7 @@ SOURCES += \
     main.cpp \
     mytableview.cpp \
     mytabwidget.cpp \
+    mytreeview.cpp \
     tabbar.cpp \
 
 HEADERS += \
@@ -43,6 +44,7 @@ HEADERS += \
     listdelegate.h \
     mytableview.h \
     mytabwidget.h \
+    mytreeview.h \
     tabbar.h \
 
 FORMS += \
