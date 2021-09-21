@@ -53,6 +53,10 @@
          <property name="text">
           <string/>
          </property>
+         <property name="icon">
+          <iconset resource="icon.qrc">
+           <normaloff>:/icon/default theme/back-arrow-.png</normaloff>:/icon/default theme/back-arrow-.png</iconset>
+         </property>
         </widget>
        </item>
        <item>
@@ -66,6 +70,10 @@
          <property name="text">
           <string/>
          </property>
+         <property name="icon">
+          <iconset resource="icon.qrc">
+           <normaloff>:/icon/default theme/forward-.png</normaloff>:/icon/default theme/forward-.png</iconset>
+         </property>
         </widget>
        </item>
        <item>
@@ -78,6 +86,10 @@
          </property>
          <property name="text">
           <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="icon.qrc">
+           <normaloff>:/icon/default theme/eye.png</normaloff>:/icon/default theme/eye.png</iconset>
          </property>
         </widget>
        </item>
@@ -196,6 +208,9 @@
         <height>32</height>
        </size>
       </property>
+      <property name="editable">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
    </layout>
@@ -238,7 +253,6 @@
    <addaction name="actiondelete"/>
    <addaction name="separator"/>
    <addaction name="actionsetting"/>
-   <addaction name="actionSearch"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="enabled">

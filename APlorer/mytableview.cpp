@@ -298,7 +298,7 @@ void MyTableView::setCurrentPage(QString path, DisplayMode displayMode, bool isN
 void MyTableView::slt_backward()
 {
     if (historyIndex == 0) {
-        return;
+        emit backHome();
     } else {
         QString backPath = history.at(--historyIndex);
         setCurrentPage(backPath, currentMode, false);
