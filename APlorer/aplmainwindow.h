@@ -79,6 +79,7 @@ public slots:
     void setStatuBarString(QString text); // 设置状态栏文字
     void setSearchContent(QString text); // 设置搜索文字
     void setSearchWindowHidden(bool hide); //设置搜索窗口隐藏
+    void setTreeView(QString path);
     void on_actionhome_triggered(); // 主页
 };
 #endif // APLMAINWINDOW_H

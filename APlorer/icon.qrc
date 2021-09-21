@@ -387,5 +387,6 @@
         <file>icon/default theme/rank.png</file>
         <file>Search.svg</file>
         <file>qt_zh_CN.qm</file>
+        <file>icon/icon.png</file>
     </qresource>
 </RCC>

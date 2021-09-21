@@ -173,6 +173,7 @@ void MyTabWidget::initPageTab(QString path, QWidget *&page)
     connect(view, &MyTableView::currentPageChanged1, mainwindow, &aplMainWindow::setPathBox);
     connect(view, SIGNAL(refreshPreview(QModelIndex)), mainwindow, SLOT(setPreviewLabel(QModelIndex)));
     connect(view, &MyTableView::currentPageChanged3, mainwindow, &aplMainWindow::setStatuBarString);
+    connect(view, &MyTableView::currentPageChanged, mainwindow, &aplMainWindow::setTreeView);
     connect(view, &MyTableView::backHome, mainwindow, &aplMainWindow::on_actionhome_triggered);
 }
 
@@ -192,13 +193,13 @@ void MyTabWidget::currentPageChanged(int index)
             disconnect(view, &MyTableView::backHome, mainwindow, &aplMainWindow::on_actionhome_triggered);
         }
     }
+
     MyTableView* view =  this->currentWidget()->findChild<MyTableView *>();
     if (view)
     {
         mainwindow->setToolButtonActions(view->forward, view->backward);
         mainwindow->setLayoutMenu(view->layoutMenu);
         mainwindow->setHistoryMenu(view->historyMenu);
-
         connect(view, SIGNAL(refreshPreview(QModelIndex)), mainwindow, SLOT(setPreviewLabel(QModelIndex)));
         connect(view, &MyTableView::backHome, mainwindow, &aplMainWindow::on_actionhome_triggered);
     }

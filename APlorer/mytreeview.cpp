@@ -11,7 +11,8 @@ MyTreeView::MyTreeView(QWidget *parent)
 void MyTreeView::setCurrentPage(QString path)
 {
     QFileSystemModel *model = static_cast<QFileSystemModel *>(this->model());
-    model->setRootPath(path);
+    // this->setRootIndex(model->index(path));
+    this->setCurrentIndex(model->index(path));
 }
 
 void MyTreeView::itemClicked(const QModelIndex &index)

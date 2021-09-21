@@ -163,6 +163,11 @@ void aplMainWindow::setSearchWindowHidden(bool hide)
     this->searchWindow->setHidden(hide);
 }
 
+void aplMainWindow::setTreeView(QString path)
+{
+    ui->directoryTree->setCurrentPage(path);
+}
+
 void aplMainWindow::initToolBar()
 {
     // 初始化工具栏
